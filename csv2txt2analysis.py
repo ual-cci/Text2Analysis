@@ -213,7 +213,7 @@ for i in range(len(corpus_lsi)):
 #plt.show()
 
 # Similarity
-check_doc_id = 23
+check_doc_id = 234
 
 vec_lsi = corpus_lsi[check_doc_id]
 index = gensim.similarities.MatrixSimilarity(lsi[corpus_tfidf])
@@ -244,6 +244,7 @@ for i in range(5):
     print(full_text_titles[closest_doc_id])
     print(texts[closest_doc_id])
 
+##########################################################################################
 ### SEEMS TO BE WORKING: (showing titles for human debugging/insight,
 #                         however the distance was calculated purely from descriptions)
 # Queried document:
@@ -260,3 +261,20 @@ for i in range(5):
 # Graduate Sales Executive - Cyber Security - BMS
 # 4  - id= 2275 , distance= 0.8842137
 # Graduate Sales Consultant - Cyber Security Software - BMS
+
+
+##########################################################################################
+# Queried document:
+# Embedded Software Engineer - Embedded C - Creative Personnel London
+
+# Closest documents:
+# 0  - id= 344 , distance= 1.0
+# Embedded Software Engineer - Embedded C - Creative Personnel London
+# 1  - id= 2229 , distance= 1.0  # <<< Detected a duality in the dataset
+# Embedded Software Engineer - Embedded C - Creative Personnel London
+# 2  - id= 1991 , distance= 0.869358
+# Embedded Software Engineer - Spectrum IT
+# 3  - id= 2360 , distance= 0.86588764
+# Embedded Software Engineer - Bedfordshire - £30,000 - £45,000 - Premier Group
+# 4  - id= 5253 , distance= 0.8601873
+# Embedded Software Engineer - Sunbury-On-Thames
