@@ -109,5 +109,7 @@ for i in range(len(full_text_dataset)):
 documents = full_text_dataset
 titles = full_text_titles
 
-np.save("data/documents.npy", documents)
-np.save("data/titles.npy", titles)
+#np.save("data/documents.npy", documents)
+#np.save("data/titles.npy", titles)
+np.savez_compressed("data/documents.npz", a=documents)
+np.savez_compressed("data/titles.npz", a=titles)

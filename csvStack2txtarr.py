@@ -12,7 +12,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 # This scraped dataset specific functions:
 csv_files = [
     "../QuestionData/graphicdesign_all_q.csv",
-    "../QuestionData/graphicdesign_all_a_50k.csv",
+    #"../QuestionData/graphicdesign_all_a_50k.csv",
     #"../QuestionData/gamedev_all_q.csv", # << even larger file
 
 ]
@@ -150,5 +150,9 @@ documents = full_text_dataset
 titles = full_text_titles
 
 # on purpose the same files - just run it in sequence probably ...
-np.save("data/documents.npy", documents)
-np.save("data/titles.npy", titles)
+plus = ""
+plus = "Stack"
+#np.save("data/documents"+plus+".npy", documents)
+#np.save("data/titles"+plus+".npy", titles)
+np.savez_compressed("data/documents"+plus+".npz", a=documents)
+np.savez_compressed("data/titles"+plus+".npz", a=titles)

@@ -4,8 +4,8 @@ from gensim.parsing.preprocessing import remove_stopwords, stem_text, strip_punc
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-documents = np.load("data/documents.npy")
-titles = np.load("data/titles.npy")
+documents = np.load("data/documents.npz")['a']
+titles = np.load("data/titles.npz")['a']
 
 # How would we continue?
 # Gensim loading:
@@ -138,5 +138,6 @@ index.save('data/index.index')
 index_lda.save('data/index_lda.index')
 
 documents_represented = texts
-np.save("data/documents_represented.npy", documents_represented)
+#np.save("data/documents_represented.npy", documents_represented)
+np.savez_compressed("data/documents_represented.npz", a=documents_represented)
 

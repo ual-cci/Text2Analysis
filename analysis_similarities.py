@@ -2,9 +2,12 @@ from gensim import corpora
 import gensim
 import numpy as np
 
-documents = np.load("data/documents.npy")
-titles = np.load("data/titles.npy")
-documents_represented = np.load("data/documents_represented.npy")
+#documents = np.load("data/documents.npy")
+#titles = np.load("data/titles.npy")
+#documents_represented = np.load("data/documents_represented.npy")
+documents = np.load("data/documents.npz")['a']
+titles = np.load("data/titles.npz")['a']
+documents_represented = np.load("data/documents_represented.npz")['a']
 
 dictionary = corpora.Dictionary.load('data/dict.dict')
 corpus = corpora.MmCorpus('data/corpus.mm')
