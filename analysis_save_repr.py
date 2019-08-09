@@ -1,6 +1,8 @@
 import numpy as np
 import gensim
 from gensim.parsing.preprocessing import remove_stopwords, stem_text, strip_punctuation
+import logging
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 documents = np.load("data/documents.npy")
 titles = np.load("data/titles.npy")
@@ -9,7 +11,7 @@ titles = np.load("data/titles.npy")
 # Gensim loading:
 from collections import defaultdict
 stoplist = set(', . : / ( ) [ ] - _ ; * & ? ! – a b c d e t i p an us on 000 if it ll to as are then '
-               'they our the you we s in if a re to this at ref do and'.split()) # additional stopwords
+               'they our the you we s in if a m I x re to this at ref do and'.split()) # additional stopwords
 texts = [
     [word for word in document.lower().split() if word not in stoplist]
     for document in documents
@@ -83,13 +85,30 @@ for i in range(3):                        # step 2 -- use the model to transform
     print(len(transformed), transformed)
 
 corpus_tfidf = tfidf[corpus]
+# LSI
+print("LSI ---")
 lsi = gensim.models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=300)  # initialize an LSI transformation
 corpus_lsi = lsi[corpus_tfidf]  # create a double wrapper over the original corpus: bow->tfidf->fold-in-lsi
-
 for i in range(3):
     print(len(corpus_lsi[i]), corpus_lsi[i])
-
 lsi.print_topics(2)
+
+# LDA
+print("LDA ---")
+## Actually seems to be failing !
+## There might need to be more cleaning up done ...
+## I also found another tutorial to try specifically for LDA ... https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
+
+# using 1 pass and updating once every 1 chunk (10,000 documents)
+lda_topics = 100
+lda = gensim.models.ldamodel.LdaModel(corpus=corpus_tfidf, id2word=dictionary, num_topics=lda_topics, update_every=1, passes=1)
+# using 20 full passes, no online updates
+#lda = gensim.models.ldamodel.LdaModel(corpus=corpus_tfidf, id2word=dictionary, num_topics=lda_topics, update_every=0, passes=20)
+corpus_lda = lda[corpus_tfidf]
+for i in range(3):
+    print(len(corpus_lda[i]), corpus_lda[i])
+lda.print_topics(2)
+
 
 xs = []
 ys = []
@@ -104,15 +123,19 @@ for i in range(len(corpus_lsi)):
 #plt.show()
 
 index = gensim.similarities.MatrixSimilarity(lsi[corpus_tfidf])
+index_lda = gensim.similarities.MatrixSimilarity(lda[corpus_tfidf])
 
 # SAVE then LOAD
 dictionary.save('data/dict.dict')
 corpora.MmCorpus.serialize('data/corpus.mm', corpus)
 corpora.MmCorpus.serialize('data/corpus_tfidf.mm', corpus_tfidf)
 corpora.MmCorpus.serialize('data/corpus_lsi.mm', corpus_lsi)
+corpora.MmCorpus.serialize('data/corpus_lda.mm', corpus_lda)
 lsi.save('data/model.lsi')
+lda.save('data/model.lda')
 tfidf.save('data/model.tfidf')
 index.save('data/index.index')
+index_lda.save('data/index_lda.index')
 
 documents_represented = texts
 np.save("data/documents_represented.npy", documents_represented)

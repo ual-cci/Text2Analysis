@@ -5,10 +5,6 @@ import matplotlib.pyplot as plt
 import gensim
 import json
 
-
-import logging
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-
 # This scraped dataset specific functions:
 csv_files = [
     "../JobAdsData/Source1-Monster/creative_jobs_clean_1363.csv",

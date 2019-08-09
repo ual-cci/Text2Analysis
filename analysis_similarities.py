@@ -10,18 +10,25 @@ dictionary = corpora.Dictionary.load('data/dict.dict')
 corpus = corpora.MmCorpus('data/corpus.mm')
 corpus_tfidf = corpora.MmCorpus('data/corpus_tfidf.mm')
 corpus_lsi = corpora.MmCorpus('data/corpus_lsi.mm')
-lsi = gensim.models.LsiModel.load('data/model.lsi')
+corpus_lda = corpora.MmCorpus('data/corpus_lda.mm')
+#lsi = gensim.models.LsiModel.load('data/model.lsi')
+#lda = gensim.models.LsiModel.load('data/model.lda')
 tfidf = gensim.models.LsiModel.load('data/model.tfidf')
 index = gensim.similarities.MatrixSimilarity.load('data/index.index')
+index_lda = gensim.similarities.MatrixSimilarity.load('data/index_lda.index')
 
 # Similarity
 check_doc_id = 234
+#check_doc_id = 102
 vec_lsi = corpus_lsi[check_doc_id]
+vec_lda = corpus_lda[check_doc_id]
 
+# LSI
+print("LSI ----")
 
 sims = index[vec_lsi]  # perform a similarity query against the corpus
 sims = sorted(enumerate(sims), key=lambda item: -item[1])
-print(sims)  # print (document_number, document_similarity) 2-tuples
+#print(sims)  # print (document_number, document_similarity) 2-tuples
 
 print("Queried document:")
 print(titles[check_doc_id])
@@ -35,6 +42,28 @@ for i in range(5):
     print(titles[closest_doc_id])
     print(documents[closest_doc_id])
     print(documents_represented[closest_doc_id])
+
+print()
+# LDA
+print("LDA ----")
+
+sims_lda = index_lda[vec_lda]  # perform a similarity query against the corpus
+sims_lda = sorted(enumerate(sims_lda), key=lambda item: -item[1])
+#print(sims_lda)  # print (document_number, document_similarity) 2-tuples
+
+print("Queried document:")
+print(titles[check_doc_id])
+print(documents[check_doc_id])
+print(documents_represented[check_doc_id])
+print()
+print("Closest documents:")
+for i in range(5):
+    closest_doc_id = sims_lda[1+i][0]
+    print(i, " - id=",closest_doc_id, ", distance=", sims_lda[1+i][1])
+    print(titles[closest_doc_id])
+    print(documents[closest_doc_id])
+    print(documents_represented[closest_doc_id])
+
 
 ##########################################################################################
 ### SEEMS TO BE WORKING: (showing titles for human debugging/insight,
