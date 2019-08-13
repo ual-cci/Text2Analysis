@@ -6,15 +6,16 @@ import gensim
 import json
 from tqdm import tqdm
 
+DATASET = "_stackv1_graphicdesignqa_sub20k"
+
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 # This scraped dataset specific functions:
 csv_files = [
     "../QuestionData/graphicdesign_all_q.csv",
-    #"../QuestionData/graphicdesign_all_a_50k.csv",
+    "../QuestionData/graphicdesign_all_a_50k.csv",
     #"../QuestionData/gamedev_all_q.csv", # << even larger file
-
 ]
 
 # Structure:
@@ -89,6 +90,22 @@ longest_i = np.argmax(lengths_questions)
 #print(lengths_questions[longest_i])
 #print(full_text_dataset[longest_i])
 
+## SUBSET:
+from random import sample
+indices = list(range(len(full_text_ids)))
+subset_i = 20000 # 20k
+indices_selected = list(sample(indices,subset_i))
+
+"""
+full_text_dataset = full_text_dataset[indices_selected]
+full_text_titles = full_text_titles[indices_selected]
+full_text_ids = full_text_ids[indices_selected]
+"""
+full_text_dataset = [v for i,v in enumerate(full_text_dataset) if i in indices_selected]
+full_text_titles = [v for i,v in enumerate(full_text_titles) if i in indices_selected]
+full_text_ids = [v for i,v in enumerate(full_text_ids) if i in indices_selected]
+
+
 # Remove HTML from bodies
 
 from bs4 import BeautifulSoup
@@ -149,10 +166,5 @@ for question in tqdm(full_text_dataset):
 documents = full_text_dataset
 titles = full_text_titles
 
-# on purpose the same files - just run it in sequence probably ...
-plus = ""
-plus = "Stack"
-#np.save("data/documents"+plus+".npy", documents)
-#np.save("data/titles"+plus+".npy", titles)
-np.savez_compressed("data/documents"+plus+".npz", a=documents)
-np.savez_compressed("data/titles"+plus+".npz", a=titles)
+np.savez_compressed("data/documents"+DATASET+".npz", a=documents)
+np.savez_compressed("data/titles"+DATASET+".npz", a=titles)

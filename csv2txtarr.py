@@ -5,12 +5,16 @@ import matplotlib.pyplot as plt
 import gensim
 import json
 
+DATASET = "_jobsv1_all"
+DATASET = "_jobsv1_goodq"
+
+
 # This scraped dataset specific functions:
 csv_files = [
     "../JobAdsData/Source1-Monster/creative_jobs_clean_1363.csv",
     "../JobAdsData/Source1-Monster/IT_jobs_clean_1511.csv",
-    #"../JobAdsData/Source2-Reed/creative2_pages_clean_1359.csv",
-    #"../JobAdsData/Source2-Reed/it2_pages_clean_1556.csv",
+    "../JobAdsData/Source2-Reed/creative2_pages_clean_1359.csv",
+    "../JobAdsData/Source2-Reed/it2_pages_clean_1556.csv",
     #"../JobAdsData/Source3-Indeed/creative2_pages_clean_4164.csv",
     #"../JobAdsData/Source3-Indeed/it2_pages_clean_986.csv"
 ]
@@ -109,7 +113,5 @@ for i in range(len(full_text_dataset)):
 documents = full_text_dataset
 titles = full_text_titles
 
-#np.save("data/documents.npy", documents)
-#np.save("data/titles.npy", titles)
-np.savez_compressed("data/documents.npz", a=documents)
-np.savez_compressed("data/titles.npz", a=titles)
+np.savez_compressed("data/documents"+DATASET+".npz", a=documents)
+np.savez_compressed("data/titles"+DATASET+".npz", a=titles)
