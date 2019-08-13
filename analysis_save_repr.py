@@ -4,8 +4,10 @@ from gensim.parsing.preprocessing import remove_stopwords, stem_text, strip_punc
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-documents = np.load("data/documents.npz")['a']
-titles = np.load("data/titles.npz")['a']
+#documents = np.load("data/documents.npz")['a']
+#titles = np.load("data/titles.npz")['a']
+documents = np.load("data/documentsStack.npz")['a']
+titles = np.load("data/titlesStack.npz")['a']
 
 # How would we continue?
 # Gensim loading:
@@ -87,13 +89,16 @@ for i in range(3):                        # step 2 -- use the model to transform
 corpus_tfidf = tfidf[corpus]
 # LSI
 print("LSI ---")
-lsi = gensim.models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=300)  # initialize an LSI transformation
+lsi_topics = 100
+lsi = gensim.models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=lsi_topics)  # initialize an LSI transformation
 corpus_lsi = lsi[corpus_tfidf]  # create a double wrapper over the original corpus: bow->tfidf->fold-in-lsi
 for i in range(3):
     print(len(corpus_lsi[i]), corpus_lsi[i])
-lsi.print_topics(2)
+
+lsi.print_topics(5)
 
 # LDA
+"""
 print("LDA ---")
 ## Actually seems to be failing !
 ## There might need to be more cleaning up done ...
@@ -108,7 +113,7 @@ corpus_lda = lda[corpus_tfidf]
 for i in range(3):
     print(len(corpus_lda[i]), corpus_lda[i])
 lda.print_topics(2)
-
+"""
 
 xs = []
 ys = []
@@ -123,19 +128,19 @@ for i in range(len(corpus_lsi)):
 #plt.show()
 
 index = gensim.similarities.MatrixSimilarity(lsi[corpus_tfidf])
-index_lda = gensim.similarities.MatrixSimilarity(lda[corpus_tfidf])
+#index_lda = gensim.similarities.MatrixSimilarity(lda[corpus_tfidf])
 
 # SAVE then LOAD
 dictionary.save('data/dict.dict')
 corpora.MmCorpus.serialize('data/corpus.mm', corpus)
 corpora.MmCorpus.serialize('data/corpus_tfidf.mm', corpus_tfidf)
 corpora.MmCorpus.serialize('data/corpus_lsi.mm', corpus_lsi)
-corpora.MmCorpus.serialize('data/corpus_lda.mm', corpus_lda)
+#corpora.MmCorpus.serialize('data/corpus_lda.mm', corpus_lda)
 lsi.save('data/model.lsi')
-lda.save('data/model.lda')
+#lda.save('data/model.lda')
 tfidf.save('data/model.tfidf')
 index.save('data/index.index')
-index_lda.save('data/index_lda.index')
+#index_lda.save('data/index_lda.index')
 
 documents_represented = texts
 #np.save("data/documents_represented.npy", documents_represented)

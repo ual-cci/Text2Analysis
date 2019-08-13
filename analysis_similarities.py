@@ -7,6 +7,9 @@ import numpy as np
 #documents_represented = np.load("data/documents_represented.npy")
 documents = np.load("data/documents.npz")['a']
 titles = np.load("data/titles.npz")['a']
+documents = np.load("data/documentsStack.npz")['a']
+titles = np.load("data/titlesStack.npz")['a']
+
 documents_represented = np.load("data/documents_represented.npz")['a']
 
 dictionary = corpora.Dictionary.load('data/dict.dict')
@@ -46,6 +49,7 @@ for i in range(5):
     print(documents[closest_doc_id])
     print(documents_represented[closest_doc_id])
 
+"""
 print()
 # LDA
 print("LDA ----")
@@ -66,7 +70,7 @@ for i in range(5):
     print(titles[closest_doc_id])
     print(documents[closest_doc_id])
     print(documents_represented[closest_doc_id])
-
+"""
 
 ##########################################################################################
 ### SEEMS TO BE WORKING: (showing titles for human debugging/insight,
