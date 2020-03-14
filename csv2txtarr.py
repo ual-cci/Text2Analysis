@@ -33,6 +33,7 @@ THR_exclude_long_errs = 26000
 THR_supposed_to_have_values = 8
 
 for csv_file in csv_files:
+    print("Loading file:",csv_file)
     df = pd.read_csv(csv_file, delimiter=',')
 
     for line in df.values:
@@ -72,46 +73,51 @@ lengths_descriptions = np.asarray(lengths_descriptions)
 print("--=============================--")
 print("Read",total_lines,"lines in total.")
 print("Skipped",total_ignored_short,"too short lines (using thr", THR_min_desc_length_allowed,")")
-print("Statistics of lenghts (min, max, avg):",np.min(lengths_descriptions), np.max(lengths_descriptions), np.average(lengths_descriptions))
 
+if total_lines == 0:
+    print("No line read from the input!")
 
-#plt.plot(lengths_descriptions)
-#plt.ylabel('lenghts of descriptions in scraped data')
-#plt.show()
+if total_lines > 0:
+    print("Statistics of lenghts (min, max, avg):", np.min(lengths_descriptions), np.max(lengths_descriptions),
+          np.average(lengths_descriptions))
 
-# Check the longest entry ? Seems alright.
-longest_i = np.argmax(lengths_descriptions)
-#print(lengths_descriptions[longest_i])
-#print(full_text_dataset[longest_i])
+    #plt.plot(lengths_descriptions)
+    #plt.ylabel('lenghts of descriptions in scraped data')
+    #plt.show()
 
-from gensim.parsing.preprocessing import remove_stopwords, stem_text, strip_punctuation
-# some hacks - words were joined together just by "." separate them
-for i in range(len(full_text_dataset)):
-    full_text_dataset[i] = full_text_dataset[i].replace('!', ' ! ')
-    full_text_dataset[i] = full_text_dataset[i].replace('?', ' ? ')
-    full_text_dataset[i] = full_text_dataset[i].replace('.', ' . ')
-    full_text_dataset[i] = full_text_dataset[i].replace(',', ' , ')
-    full_text_dataset[i] = full_text_dataset[i].replace(':', ' : ')
-    full_text_dataset[i] = full_text_dataset[i].replace(';', ' ; ')
-    full_text_dataset[i] = full_text_dataset[i].replace('(', ' ( ')
-    full_text_dataset[i] = full_text_dataset[i].replace(')', ' ) ')
-    full_text_dataset[i] = full_text_dataset[i].replace('/', ' / ')
-    full_text_dataset[i] = full_text_dataset[i].replace('*', ' * ')
-    full_text_dataset[i] = full_text_dataset[i].replace(']', ' ] ')
-    full_text_dataset[i] = full_text_dataset[i].replace('[', ' [ ')
-    full_text_dataset[i] = full_text_dataset[i].replace('&', ' & ')
-    full_text_dataset[i] = full_text_dataset[i].replace('_', ' _ ')
+    # Check the longest entry ? Seems alright.
+    longest_i = np.argmax(lengths_descriptions)
+    #print(lengths_descriptions[longest_i])
+    #print(full_text_dataset[longest_i])
 
-    full_text_dataset[i] = remove_stopwords(full_text_dataset[i])
+    from gensim.parsing.preprocessing import remove_stopwords, stem_text, strip_punctuation
+    # some hacks - words were joined together just by "." separate them
+    for i in range(len(full_text_dataset)):
+        full_text_dataset[i] = full_text_dataset[i].replace('!', ' ! ')
+        full_text_dataset[i] = full_text_dataset[i].replace('?', ' ? ')
+        full_text_dataset[i] = full_text_dataset[i].replace('.', ' . ')
+        full_text_dataset[i] = full_text_dataset[i].replace(',', ' , ')
+        full_text_dataset[i] = full_text_dataset[i].replace(':', ' : ')
+        full_text_dataset[i] = full_text_dataset[i].replace(';', ' ; ')
+        full_text_dataset[i] = full_text_dataset[i].replace('(', ' ( ')
+        full_text_dataset[i] = full_text_dataset[i].replace(')', ' ) ')
+        full_text_dataset[i] = full_text_dataset[i].replace('/', ' / ')
+        full_text_dataset[i] = full_text_dataset[i].replace('*', ' * ')
+        full_text_dataset[i] = full_text_dataset[i].replace(']', ' ] ')
+        full_text_dataset[i] = full_text_dataset[i].replace('[', ' [ ')
+        full_text_dataset[i] = full_text_dataset[i].replace('&', ' & ')
+        full_text_dataset[i] = full_text_dataset[i].replace('_', ' _ ')
 
-    # slower processing from:
-    #full_text_dataset[i] = strip_punctuation(full_text_dataset[i]) # our default seems to be better
-    #full_text_dataset[i] = stem_text(full_text_dataset[i]) # do we want "porter-stemmed version" ?
+        full_text_dataset[i] = remove_stopwords(full_text_dataset[i])
 
-    full_text_dataset[i] = " ".join(list(gensim.utils.tokenize(full_text_dataset[i])))
+        # slower processing from:
+        #full_text_dataset[i] = strip_punctuation(full_text_dataset[i]) # our default seems to be better
+        #full_text_dataset[i] = stem_text(full_text_dataset[i]) # do we want "porter-stemmed version" ?
 
-documents = full_text_dataset
-titles = full_text_titles
+        full_text_dataset[i] = " ".join(list(gensim.utils.tokenize(full_text_dataset[i])))
 
-np.savez_compressed("data/documents"+DATASET+".npz", a=documents)
-np.savez_compressed("data/titles"+DATASET+".npz", a=titles)
+    documents = full_text_dataset
+    titles = full_text_titles
+
+    np.savez_compressed("data/documents"+DATASET+".npz", a=documents)
+    np.savez_compressed("data/titles"+DATASET+".npz", a=titles)
