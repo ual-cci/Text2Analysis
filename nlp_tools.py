@@ -135,6 +135,9 @@ class NLPTools(object):
         import os
         if not os.path.exists(plot_dir):
             os.makedirs(plot_dir)
+        if not os.path.exists("data"):
+            os.makedirs("data")
+
 
         import pandas as pd
         from pprint import pprint
