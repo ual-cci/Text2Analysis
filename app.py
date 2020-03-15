@@ -1,4 +1,4 @@
-from flask import Flask, session, redirect, url_for, request, render_template
+from flask import Flask, session, redirect, url_for, request, render_template, send_file
 from analysis_handler import AnalysisHandler
 import os
 
@@ -37,6 +37,15 @@ def process(user_input=None):
     return render_template('process.html', user_input=preview, analysis_reply=analysis_reply)
 
 
+@app.route('/last', methods=['GET', 'POST'])
+def last():
+    return render_template('plots/LDA_Visualization.html')
+
+@app.route('/download')
+def download():
+    path = "save.zip"
+    return send_file(path, as_attachment=True)
+
 @app.route('/forget')
 def forget():
     # remove the text data from the session if it's there
@@ -50,7 +59,7 @@ def forget():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 33507))
-    app.run(debug=True, use_reloader=True, port=port)
+    app.run(debug=True, port=port)
     #port = int(os.environ.get('PORT', 5000))
     #app.run(host='0.0.0.0', port=port)
 
