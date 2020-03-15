@@ -13,6 +13,15 @@ class NLPTools(object):
         #return "Yes, that's very nice text!"
         data = [text]
 
+
+        # restart / file cleanup!:
+        import os
+        files = ["save.zip", "templates/plots/wordclouds_00.png", "templates/plots/wordclouds_01.png", "templates/plots/wordclouds_02.png", "templates/plots/wordclouds_03.png"]
+        for file in files:
+            if os.path.exists(file):
+                os.remove(file)
+
+
         import re
         import pandas as pd
         from pprint import pprint
@@ -422,6 +431,7 @@ class NLPTools(object):
             print("saving it...")
             pyLDAvis.save_html(vis, NAME_html_interactive)
             print("done")
+
 
         import shutil
         output_filename = "save"
