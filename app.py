@@ -42,6 +42,6 @@ def forget():
     session.pop('user_input', None)
     return redirect(url_for('enter'))
 
-
-with app.app_context():
-    app.run()
+if __name__ == '__main__':
+    with app.app_context():
+        app.run(debug=True)
