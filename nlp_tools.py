@@ -20,6 +20,7 @@ class NLPTools(object):
         for file in files:
             if os.path.exists(file):
                 os.remove(file)
+                print("deleted", file)
 
 
         import re

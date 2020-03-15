@@ -3,8 +3,6 @@ from analysis_handler import AnalysisHandler
 import os
 
 app = Flask(__name__)
-# Set the secret key to some random bytes. Keep this really secret!
-app.secret_key = b'F\xc4\xea]\xab$E$X\xd6H?\xbc\xd9oszblunk'
 
 @app.route('/')
 def index():
@@ -58,8 +56,6 @@ def forget():
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 33507))
+    port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, port=port)
-    #port = int(os.environ.get('PORT', 5000))
-    #app.run(host='0.0.0.0', port=port)
 
