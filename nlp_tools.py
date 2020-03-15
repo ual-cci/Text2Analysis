@@ -159,7 +159,8 @@ class NLPTools(object):
         LOAD_lda_model = False
         LDA_tryMallet = False  # doesn't have the same support as generic LDA tho - convert differently?
 
-        LDA_number_of_topics = 13  # Wait for metaopt!
+        #LDA_number_of_topics = 13  # Wait for metaopt!
+        LDA_number_of_topics = 4  # Wait for metaopt!
         CALC_coherence = True
 
         VIZ_hist = True
