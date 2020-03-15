@@ -1,5 +1,6 @@
 from flask import Flask, session, redirect, url_for, request, render_template
 from analysis_handler import AnalysisHandler
+import os
 
 app = Flask(__name__)
 # Set the secret key to some random bytes. Keep this really secret!
@@ -48,4 +49,8 @@ def forget():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=True, port=33507)
+    port = int(os.environ.get('PORT', 33507))
+    app.run(debug=True, use_reloader=True, port=port)
+    #port = int(os.environ.get('PORT', 5000))
+    #app.run(host='0.0.0.0', port=port)
+

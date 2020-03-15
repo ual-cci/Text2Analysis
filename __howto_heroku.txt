@@ -5,3 +5,10 @@ heroku buildpacks:set heroku/python
 
 # On update:
 git push heroku master
+
+# Useful:
+heroku logs
+# to check when there are errors on heroku server side
+
+heroku run bash
+# to see folder structure on server, also to try python
