@@ -1,7 +1,7 @@
 # Once only:
 heroku login
 heroku create previtus-nlp-api-heroku
-heroku buildpacks:add https://github.com/heroku-python/conda-buildpack
+heroku buildpacks:set heroku/python
 
 # On update:
 git push heroku master
