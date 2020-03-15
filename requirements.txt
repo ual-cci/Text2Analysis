@@ -39,9 +39,7 @@ Jinja2==2.11.1
 jmespath==0.9.5
 joblib==0.14.1
 kiwisolver==1.1.0
-librosa==0.7.2
 llvmlite==0.31.0
-lws==1.2.6
 Markdown==3.2.1
 MarkupSafe==1.1.1
 matplotlib==3.2.0
@@ -67,12 +65,9 @@ py==1.8.1
 pycparser==2.20
 pyLDAvis==2.1.2
 pyparsing==2.4.6
-PyQt5==5.14.1
-PyQt5-sip==12.7.1
 pytest==5.4.1
 python-dateutil==2.8.1
 pytz==2019.3
-PyWavelets==1.1.1
 PyYAML==5.3
 requests==2.23.0
 resampy==0.2.2
