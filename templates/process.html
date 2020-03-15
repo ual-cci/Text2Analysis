@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div>
+  Text input was:
+{% if user_input %}
+  <p>{{ user_input }}!</p>
+{% else %}
+  <p>(Couldn't load text data!)!</p>
+{% endif %}
+</div>
+
+<div>
+  Analysis says:
+{% if analysis_reply %}
+  <p>{{ analysis_reply }}!</p>
+{% else %}
+  <p>(Couldn't load analysis!)!</p>
+{% endif %}
+</div>
+
+{% endblock %}
+
