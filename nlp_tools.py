@@ -39,11 +39,46 @@ class NLPTools(object):
 
     def __init__(self, settings):
         self.settings = settings
-        self.verbose = 1 # 1 normal, 2 print everything including examples
+        self.verbose = 1 # 1 normal, 2 print everything including examples ... 0 silent
 
         self.colors_topics = [color for name, color in mcolors.TABLEAU_COLORS.items()] + [color for name, color in
                                                                                      mcolors.XKCD_COLORS.items()]
 
+        self.processing_mode = -1 # -1 = no data loaded, 1 = raw text loaded, 2 = texts loaded in list,
+                                  #  3 = texts loaded in list including captions
+
+        self.stop_words = self.load_stopwords()
+
+        self.id2word = None
+        self.corpus = None
+        self.lda_model = None
+
+
+    def load(self, raw_text_input=None, list_of_texts_input=None, list_of_captions_input=None):
+        # Loading data - either as a raw text, or as list of texts optionally with captions
+        self.list_of_texts_data = None
+        self.list_of_captions_data = None
+
+        if (list_of_texts_input is None and raw_text_input is not None):
+            print("Loading text from raw input (not split into lists).")
+            # We will have to split it into sentences.
+
+            self.list_of_texts_data = [raw_text_input] ########### <<<<<<<<<<>>>>>>>>>>>>>>>>>>>>
+            self.processing_mode = 1
+        elif (list_of_texts_input is not None and raw_text_input is None):
+            if list_of_captions_input is None:
+                print("Loading text as a list of texts without captions.")
+                # Great, probably better splitting that when just using splitting by sentences - aka if each one is a
+                #  document, then the result will make more sense.
+                self.list_of_texts_data = list_of_texts_input
+                self.processing_mode = 2
+            else:
+                print("Loading text as a list of texts with captions.")
+                self.list_of_texts_data = list_of_texts_input
+                self.list_of_captions_data = list_of_captions_input
+                self.processing_mode = 3
+        else:
+            print("Illegal combination of data, we need raw text, or a list of texts optionally with captions")
 
     def restart_workspace(self):
         # restart / file cleanup!:
@@ -77,6 +112,7 @@ class NLPTools(object):
         return stop_words
 
     def preprocessing(self, data, stop_words):
+        # data contains a list of either sentences or documents (list of strings)
 
         if self.verbose > 1:
             print("loaded text")
@@ -84,10 +120,13 @@ class NLPTools(object):
             pprint(data[:1])
 
         # Remove Emails
+        print("-removing emails")
         data = [re.sub('\S*@\S*\s?', '', doc) for doc in data]
         # Remove new line characters
+        print("-removing new lines")
         data = [re.sub('\s+', ' ', doc) for doc in data]
         # Remove distracting single quotes
+        print("-removing single quotes")
         data = [re.sub("\'", "", doc) for doc in data]
 
         if self.verbose > 1:
@@ -95,12 +134,14 @@ class NLPTools(object):
             print(len(data[:1][0]))
             pprint(data[:1][0])
 
+        print("-sentences to words")
         data_words = list(sentences_to_words(data))
 
         if self.verbose > 1:
             print(data_words[:1])
 
         # Build the bigram and trigram models
+        print("-bigrams")
         bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100)  # higher threshold fewer phrases.
         # Faster way to get a sentence clubbed as a trigram/bigram
         bigram_mod = gensim.models.phrases.Phraser(bigram)
@@ -112,8 +153,10 @@ class NLPTools(object):
         # Initialize spacy 'en' model, keeping only tagger component (for efficiency)
         # python3 -m spacy download en
         nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
+        nlp.max_length = 9000000
 
         # Do lemmatization keeping only noun, adj, vb, adv
+        print("-lemmatization")
         data_lemmatized = lemmatization(data_words_bigrams, nlp, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
 
         if self.verbose > 1:
@@ -121,19 +164,100 @@ class NLPTools(object):
 
         return data, data_lemmatized
 
+    # TODO:
+    #  - function that goes from text into pyLDA visualization = RAW TEXT
+    #       - pyLDA obv
+    #       - wordclouds
+    #  - function which processes data as list of articles (for example) = LIST OF TEXTS
+    #       - [optional] caption for each of the articles                = CAPTIONS
+    #       - this one allows tsne (color by topics), histogram distribution over topics
+    #                              (optional caption as mouseover)
+    #       - and (optionally) also the other analysis on pure joined text
+
+    # * def prepare - loads input(s)
+    # * def pyLDA
+    # def wordclouds
+    # def list_tsne
+    # def list_histograms
+
+    # def optimal_number_of_topics(min, max) -> returns scores over coherences + best coherence
+
+    # ==================================================================
+
+    def prep_data_lemmatized(self):
+        data_cleaned, data_lemmatized = self.preprocessing(self.list_of_texts_data, self.stop_words)
+        return data_lemmatized
+
+    def prepare_lda_model(self, data_lemmatized, LDA_number_of_topics):
+        # Build LDA model
+
+        self.id2word = corpora.Dictionary(data_lemmatized)
+        self.corpus = [self.id2word.doc2bow(text) for text in data_lemmatized]
+
+        if self.verbose > 0:
+            print("Building/Loading LDA model (takes time)")
+
+        self.lda_model = gensim.models.ldamodel.LdaModel(corpus=self.corpus, id2word=self.id2word, num_topics=LDA_number_of_topics,
+                                                        random_state=100, update_every=1, chunksize=100, passes=10,
+                                                        alpha='auto', per_word_topics=True)
+        #self.lda_model.save('data/model_LDAEXAMPLE.lda')
+        #self.lda_model = gensim.models.LdaModel.load('data/model_LDAEXAMPLE.lda')
+
+
+    def analyze_pyLDA(self, pyLDAviz_name):
+        if (self.lda_model is None or self.corpus is None or self.id2word is None):
+            print("LDA model is not ready, call that first!")
+            assert False
+
+        print("creating visualization...")
+        vis = pyLDAvis.gensim.prepare(self.lda_model, self.corpus, self.id2word)
+        print("saving it...")
+        pyLDAvis.save_html(vis, pyLDAviz_name)
+        print("done")
+
+    def analyze_direct_to_pyLDAviz(self):
+        data_lemmatized = self.prep_data_lemmatized()
+        LDA_number_of_topics = 4
+
+        self.prepare_lda_model(data_lemmatized, LDA_number_of_topics)
+
+        pyLDAviz_name = "templates/plots/LDA_Visualization.html"
+        self.analyze_pyLDA(pyLDAviz_name)
+
     def analyze(self, text):
         #return "Yes, that's very nice text!"
 
         self.restart_workspace()
 
-        data = [text]
-        stop_words = self.load_stopwords()
-        data, data_lemmatized = self.preprocessing(data, stop_words)
+        # SPLIT RAW text INTO sentences
+        V = 1
+        #V = 2 faster yes, but i want to keep original terms only limited to some types - another func maybe?
 
-        ### Data prepared, save
-        texts = data_lemmatized
-        data = [text]
-        titles = ["foobar"]
+        if V==1:
+            sentences = gensim.summarization.textcleaner.split_sentences(text)
+            #sentences = gensim.summarization.textcleaner.clean_text_by_sentences(text)
+            print("we have", len(sentences), "sentences")
+            print("len(sentences[0])=", len(sentences[0]))
+
+            if self.verbose > 0:
+                print("Pre-processing text")
+            sentences_cleaned, sentences_lemmatized = self.preprocessing(sentences, self.stop_words)
+
+        elif V==2: #TODO TEST IF ITS THE SAME, BUT FASTER!
+            sentences_as_syntactic_units = gensim.summarization.textcleaner.clean_text_by_sentences(text)
+            sentences_lemmatized = [str(s.token).split(" ") for s in sentences_as_syntactic_units]
+
+        print("into Dictionary goes this:")
+        #print("sentences_lemmatized=",sentences_lemmatized)
+        print("sentences_lemmatized[0]=",sentences_lemmatized[0])
+
+
+        print("")
+        print("")
+        print("")
+        print("len(data_lemmatized)", len(sentences_lemmatized))
+        print("len(data_lemmatized[0])", len(sentences_lemmatized[0]))
+
 
         DATASET = ""
         plot_dir = "templates/plots" + DATASET + "/"
@@ -158,8 +282,9 @@ class NLPTools(object):
         DEBUG_print_topics = False
 
         # GENSIM analysis
-        id2word = corpora.Dictionary(texts)
-        corpus = [id2word.doc2bow(text) for text in texts]
+
+        id2word = corpora.Dictionary(sentences_lemmatized)
+        corpus = [id2word.doc2bow(text) for text in sentences_lemmatized]
         """
         if DEBUG_print_docs:
             print("document in vector format:", corpus[:1])
@@ -173,14 +298,15 @@ class NLPTools(object):
             topics_step = 1
             plot_name = NAME_METAOPT_plot + str(topics_start) + "TO" + str(topics_end) + "BY" + str(
                 topics_step) + ".png"
-            LDA_best_number_of_topics(id2word, corpus, texts, topics_start, topics_end, topics_step,
+            LDA_best_number_of_topics(id2word, corpus, sentences_lemmatized, topics_start, topics_end, topics_step,
                                       mallet_lda=LDA_tryMallet, plot_name=plot_name)
             print("Analyze the results of the meta-optimalization ^^^")
             assert False
         """
 
         # Build LDA model
-        print("Building/Loading LDA model (takes time)")
+        if self.verbose > 0:
+            print("Building/Loading LDA model (takes time)")
         if LOAD_lda_model:
             lda_model = gensim.models.LdaModel.load('data/model_LDAEXAMPLE.lda')
         else:
@@ -193,13 +319,11 @@ class NLPTools(object):
             print("Topics:")
             pprint(lda_model.print_topics(num_topics=LDA_number_of_topics, num_words=5))
 
-        doc_lda = lda_model[corpus]
-
         # Evaluation - Perplexity, Coherence Score
         print('\nPerplexity: ',
               lda_model.log_perplexity(corpus))  # a measure of how good the model is. lower the better.
         if CALC_coherence:
-            coherence_model_lda = CoherenceModel(model=lda_model, texts=texts, dictionary=id2word, coherence='c_v')
+            coherence_model_lda = CoherenceModel(model=lda_model, texts=sentences_lemmatized, dictionary=id2word, coherence='c_v')
             coherence_lda = coherence_model_lda.get_coherence()
             print('\nCoherence Score: ', coherence_lda)
 
@@ -209,7 +333,7 @@ class NLPTools(object):
         """
         if SAVE_doc2topic or SAVE_topic2docs or SAVE_topic2num or VIZ_hist:
             df_topic_sents_keywords, dominant_topics_as_arr = format_topics_sentences(ldamodel=lda_model, corpus=corpus,
-                                                                                      texts=data)
+                                                                                      texts=sentences)
             df_dominant_topic = df_topic_sents_keywords.reset_index()
             df_dominant_topic.columns = ['Document_No', 'Dominant_Topic', 'Topic_Perc_Contrib', 'Keywords', 'Text']
         """
@@ -227,7 +351,7 @@ class NLPTools(object):
 
                 fig = plt.figure()
                 topic_words = dict(topic_words)
-                cloud = WordCloud(stopwords=stop_words, background_color='white', width=2500, height=1800,
+                cloud = WordCloud(stopwords=self.stop_words, background_color='white', width=2500, height=1800,
                                   max_words=10, colormap='tab10',
                                   color_func=lambda *args, **kwargs: self.colors_topics[topic_i],
                                   prefer_horizontal=1.0)

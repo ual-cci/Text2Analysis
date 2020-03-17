@@ -13,6 +13,7 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.ERROR)
 import warnings
 warnings.filterwarnings("ignore",category=DeprecationWarning)
+from tqdm import tqdm
 
 
 # Meta optimalization - selection of the best number of topics for a model:
@@ -124,7 +125,7 @@ def make_trigrams(trigram_model, bigram_model, texts):
 def lemmatization(texts, nlp, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
     """https://spacy.io/api/annotation"""
     texts_out = []
-    for sent in texts:
+    for sent in tqdm(texts):
         doc = nlp(" ".join(sent))
         texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
     return texts_out
