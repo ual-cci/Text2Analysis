@@ -21,12 +21,13 @@ class AnalysisHandler(object):
 
 
 """
-settings = None
-testAnalysis = AnalysisHandler(settings)
+if __name__ == '__main__':
+    settings = None
+    testAnalysis = AnalysisHandler(settings)
 
-text = 'lorem ipsum'
-testAnalysis.load_text(text)
-reply = testAnalysis.call_analysis()
+    text = 'lorem ipsum'
+    testAnalysis.load_text(text)
+    reply = testAnalysis.call_analysis()
 
-print(reply)
+    print(reply)
 """

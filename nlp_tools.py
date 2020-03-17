@@ -1,5 +1,36 @@
 from lda_tests_2analyze_functions import *
 import numpy as np
+import os
+import re
+import shutil
+
+from pprint import pprint
+import pandas as pd
+
+# Gensim
+import gensim
+import gensim.corpora as corpora
+from gensim.utils import simple_preprocess
+from gensim.models import CoherenceModel
+
+# spacy for lemmatization
+import spacy
+
+# Plotting tools
+import pyLDAvis
+import pyLDAvis.gensim  # don't skip this
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from nltk.corpus import stopwords
+import matplotlib.colors as mcolors
+
+# Enable logging for gensim - optional
+import logging
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.ERROR)
+
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 class NLPTools(object):
     """
@@ -8,48 +39,24 @@ class NLPTools(object):
 
     def __init__(self, settings):
         self.settings = settings
+        self.verbose = 1 # 1 normal, 2 print everything including examples
 
-    def analyze(self, text):
-        #return "Yes, that's very nice text!"
-        data = [text]
-
-
+    def restart_workspace(self):
         # restart / file cleanup!:
-        import os
         files = ["save.zip", "templates/plots/wordclouds_00.png", "templates/plots/wordclouds_01.png", "templates/plots/wordclouds_02.png", "templates/plots/wordclouds_03.png"]
         for file in files:
             if os.path.exists(file):
                 os.remove(file)
                 print("deleted", file)
 
+    def prepare_workspace(self, plot_dir):
+        if not os.path.exists(plot_dir):
+            os.makedirs(plot_dir)
+        if not os.path.exists("data"):
+            os.makedirs("data")
 
-        import re
-        import pandas as pd
-        from pprint import pprint
-
-        # Gensim
-        import gensim
-        import gensim.corpora as corpora
-        from gensim.utils import simple_preprocess
-        from gensim.models import CoherenceModel
-
-        # spacy for lemmatization
-        import spacy
-
-        # Plotting tools
-        import pyLDAvis
-        import pyLDAvis.gensim  # don't skip this
-        import matplotlib.pyplot as plt
-
-        # Enable logging for gensim - optional
-        import logging
-        logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.ERROR)
-
-        import warnings
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-
+    def load_stopwords(self):
         # NLTK Stop words
-        from nltk.corpus import stopwords
         stop_words = stopwords.words('english')
         stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
 
@@ -59,13 +66,19 @@ class NLPTools(object):
         stop_words.extend(stoplist)
         stoplist = set('experience job ensure able working join key apply strong recruitment work team successful '
                        'paid contact email role skills company day good high time required want right success'
-                       'ideal needs feel send yes no arisen arise title true'.split())
-        stop_words.extend(stoplist)
-        stoplist = set('work experience role application process contract interested touch'.split())
+                       'ideal needs feel send yes no arisen arise title true work role application process contract '
+                       'interested touch'.split())
         stop_words.extend(stoplist)
 
-        print(len(data[:1][0]))
-        pprint(data[:1])
+        return stop_words
+
+    def preprocessing(self, data):
+
+        stop_words = self.load_stopwords()
+        if self.verbose > 1:
+            print("loaded text")
+            print(len(data[:1][0]))
+            pprint(data[:1])
 
         # Remove Emails
         data = [re.sub('\S*@\S*\s?', '', doc) for doc in data]
@@ -74,53 +87,24 @@ class NLPTools(object):
         # Remove distracting single quotes
         data = [re.sub("\'", "", doc) for doc in data]
 
-        print(len(data[:1][0]))
-        pprint(data[:1][0])
+        if self.verbose > 1:
+            print("removed special chars text")
+            print(len(data[:1][0]))
+            pprint(data[:1][0])
 
-        def sent_to_words(sentences):
-            for sentence in sentences:
-                # remove accent, remove too short and too long words
-                yield (gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
+        data_words = list(sentences_to_words(data))
 
-        data_words = list(sent_to_words(data))
-
-        print(data_words[:1])
+        if self.verbose > 1:
+            print(data_words[:1])
 
         # Build the bigram and trigram models
         bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100)  # higher threshold fewer phrases.
-        trigram = gensim.models.Phrases(bigram[data_words], threshold=100)
-
         # Faster way to get a sentence clubbed as a trigram/bigram
         bigram_mod = gensim.models.phrases.Phraser(bigram)
-        trigram_mod = gensim.models.phrases.Phraser(trigram)
-
-        # See trigram example
-        print(len(trigram_mod[bigram_mod[data_words[0]]]))
-        print(trigram_mod[bigram_mod[data_words[0]]])
-
-        # Define functions for stopwords, bigrams, trigrams and lemmatization
-        def remove_stopwords(texts):
-            return [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
-
-        def make_bigrams(texts):
-            return [bigram_mod[doc] for doc in texts]
-
-        def make_trigrams(texts):
-            return [trigram_mod[bigram_mod[doc]] for doc in texts]
-
-        def lemmatization(texts, nlp, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
-            """https://spacy.io/api/annotation"""
-            texts_out = []
-            for sent in texts:
-                doc = nlp(" ".join(sent))
-                texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
-            return texts_out
-
         # Remove Stop Words
-        data_words_nostops = remove_stopwords(data_words)
-
+        data_words_nostops = remove_stopwords(data_words, stop_words)
         # Form Bigrams
-        data_words_bigrams = make_bigrams(data_words_nostops)
+        data_words_bigrams = make_bigrams(bigram_mod, data_words_nostops)
 
         # Initialize spacy 'en' model, keeping only tagger component (for efficiency)
         # python3 -m spacy download en
@@ -129,38 +113,27 @@ class NLPTools(object):
         # Do lemmatization keeping only noun, adj, vb, adv
         data_lemmatized = lemmatization(data_words_bigrams, nlp, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
 
-        print(data_lemmatized[:1])
+        if self.verbose > 1:
+            print(data_lemmatized[:1])
+
+        return data, data_lemmatized
+
+    def analyze(self, text):
+        #return "Yes, that's very nice text!"
+
+        self.restart_workspace()
+
+        data = [text]
+        data, data_lemmatized = self.preprocessing(data)
 
         ### Data prepared, save
         texts = data_lemmatized
         data = [text]
         titles = ["foobar"]
 
-        ################################################################################################################
-        ################################################################################################################
-        ################################################################################################################
-        ################################################################################################################
         DATASET = ""
         plot_dir = "templates/plots" + DATASET + "/"
-        import os
-        if not os.path.exists(plot_dir):
-            os.makedirs(plot_dir)
-        if not os.path.exists("data"):
-            os.makedirs("data")
-
-
-        import pandas as pd
-        from pprint import pprint
-        import gensim
-        import gensim.corpora as corpora
-        from gensim.models import CoherenceModel
-        import pyLDAvis
-        import pyLDAvis.gensim  # don't skip this
-        import matplotlib.pyplot as plt
-        import logging
-        logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.ERROR)
-        import warnings
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        self.prepare_workspace(plot_dir)
 
         ### Settings:
         METAOPT_num_of_topics = False
@@ -217,25 +190,9 @@ class NLPTools(object):
         if LOAD_lda_model:
             lda_model = gensim.models.LdaModel.load('data/model_LDAEXAMPLE.lda')
         else:
-            if LDA_tryMallet:
-                # mallet LDA
-                mallet_path = '../mallet-2.0.8/bin/mallet'  # update this path
-                lda_model = gensim.models.wrappers.LdaMallet(mallet_path, corpus=corpus,
-                                                             num_topics=LDA_number_of_topics, id2word=id2word)
-                # convert
-                lda_model = gensim.models.wrappers.ldamallet.malletmodel2ldamodel(lda_model)
-
-            else:
-                # normal LDA
-                lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
-                                                            id2word=id2word,
-                                                            num_topics=LDA_number_of_topics,
-                                                            random_state=100,
-                                                            update_every=1,
-                                                            chunksize=100,
-                                                            passes=10,
-                                                            alpha='auto',
-                                                            per_word_topics=True)
+            lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus, id2word=id2word, num_topics=LDA_number_of_topics,
+                                                        random_state=100, update_every=1, chunksize=100, passes=10,
+                                                        alpha='auto', per_word_topics=True)
             lda_model.save('data/model_LDAEXAMPLE.lda')
 
         if DEBUG_print_topics:
@@ -310,7 +267,6 @@ class NLPTools(object):
             plt.savefig(NAME_hist)
             plt.close()
 
-        import matplotlib.colors as mcolors
         colors_topics = [color for name, color in mcolors.TABLEAU_COLORS.items()] + [color for name, color in
                                                                                      mcolors.XKCD_COLORS.items()]
 
@@ -318,9 +274,6 @@ class NLPTools(object):
         if VIZ_wordclouds:
             print("Saving wordclouds into >", NAME_wordclouds, "...")
 
-            from matplotlib import pyplot as plt
-            from wordcloud import WordCloud
-            from nltk.corpus import stopwords
 
             stop_words = stopwords.words('english')
             stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
@@ -434,7 +387,6 @@ class NLPTools(object):
             print("done")
 
 
-        import shutil
         output_filename = "save"
         dir_name = "templates/plots"
         shutil.make_archive(output_filename, 'zip', dir_name)
