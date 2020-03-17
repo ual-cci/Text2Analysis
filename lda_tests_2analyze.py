@@ -1,5 +1,5 @@
 # following the nicely written https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
-from lda_tests_2analyze_functions import *
+from nlp_functions import *
 
 
 def main():
