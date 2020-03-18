@@ -10,7 +10,14 @@ def index():
 
 @app.route('/enter', methods=['GET', 'POST'])
 def enter():
-    return render_template('enter.html')
+    sample_text = "Lorem Ipsum"
+    try:
+        file = open("sample_input.txt", "r")
+        sample_text = file.read()
+        file.close()
+    except:
+        print("Failed to load sample_input.txt, loading default text string.")
+    return render_template('enter.html', sample_text = sample_text)
 
 @app.route('/process', methods=['GET', 'POST'])
 def process(user_input=None):
@@ -22,8 +29,7 @@ def process(user_input=None):
         analysis_handler = AnalysisHandler(settings)
 
         analysis_handler.load_text(user_input)
-        analysis_reply = analysis_handler.call_analysis()
-        #analysis_reply = analysis_handler.call_pyLDA_viz()
+        analysis_reply = analysis_handler.call_analysis_raw_text()
 
         preview = user_input[0:20]+"..."
     else:

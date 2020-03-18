@@ -12,19 +12,14 @@ class AnalysisHandler(object):
         self.nlp_tools = nlp_tools.NLPTools(self.settings)
 
     def load_text(self, text):
-
         self.input_text = text
         print("Loaded text with", len(text), "characters!")
 
-    def call_analysis(self):
-        return self.nlp_tools.analyze(self.input_text)
+    def call_analysis_raw_text(self):
+        self.nlp_tools.load_splitting_by_sentences(self.input_text)
+        #return self.nlp_tools.analyze_full_bak() # older
+        return self.nlp_tools.analyze_raw_text()
 
-    """ REWRITTTE
-    def call_pyLDA_viz(self):
-        self.nlp_tools.load(raw_text_input=self.input_text)
-        self.nlp_tools.analyze_direct_to_pyLDAviz()
-        return "pyLDAviz analysis ready!"
-    """
 
 """
 # v1a
@@ -38,20 +33,8 @@ if __name__ == '__main__':
 
     print(reply)
 """
+
 """
-# v1b
-if __name__ == '__main__':
-    settings = None
-    testAnalysis = AnalysisHandler(settings)
-
-    text = 'lorem ipsum'
-    testAnalysis.load_text(text)
-    reply = testAnalysis.call_pyLDA_viz()
-
-    print(reply)
-"""
-
-
 if __name__ == '__main__':
     settings = None
     testAnalysis = AnalysisHandler(settings)
@@ -78,3 +61,4 @@ if __name__ == '__main__':
 #   - input from textarea / from one textfile = RAW TEXT
 #   - input from CSV, each document is one row = LIST OF TEXTS
 #   - (optional) input from CSV in [text,caption] per row  = LIST OF TEXTS+CAPTIONS
+"""

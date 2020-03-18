@@ -1,0 +1,146 @@
+Smart cities: How data and artificial intelligence could change London
+
+With growing pressure to cut carbon emissions and reduce the number of vehicles on the road, some small cameras could help provide the answer to London's emission woes.
+
+You could easily miss it.
+
+It's a small triangular grey box high up on a lamp-post but it could hold the key to big changes on London's streets.
+
+These are scanners counting who is using the road and how.
+
+The computer is learning all the time, so much so that it has a 98% accuracy rate in identifying vehicles and people.
+
+Previously, transport planners used people to do manual data counts which were more unreliable and could only provide a snapshot of who was using the road.
+
+The new system can run 24 hours a day, seven days a week and is part of what is called the "smart city" revolution.
+
+Radically change
+As cities try to encourage environmental forms of getting around such as walking and cycling, many are being redesigned to make that easier and safer.
+
+In London, the mayor's Transport Strategy has a target of 80% of journeys in London to be made by walking, cycling and public transport by 2041.
+
+Using the data from these scanners, planners would be able to change streets and target investment.
+
+For example on a feed of Millbank, it becomes obvious from the data that hardly any pedestrians use the pavement by the river. Is there a barrier to pedestrians getting there? Should there be a pedestrian crossing?
+
+If the data shows high numbers of cyclists on one road, could investment be targeted there to provide a bike lane? If buses are being held up at a junction, could that be redesigned?
+
+There is also the potential to link up the scanners to traffic signals to manage demand on the network.
+
+Transport for London (TfL) says all the video, which is part of a two-year trial with Vivacity, is discarded within seconds, meaning no personal data is stored.
+
+Glynn Barton, TfL's director of network management, said: "We're always looking for innovative new ways of making our roads safer and more efficient.
+
+"New data from trials such as this will be really valuable as we invest and make day-to-day decisions to enable more people to walk and cycle."
+
+It is early days but the use of this kind of data has the potential to radically change London's streetscapes.
+
+Other cities will be watching closely.
+
+CES 2020: Neon's artificial humans 'don't live up to hype'
+
+"Artificial humans" - virtual characters - have been shown off by Samsung-backed start-up Neon at the CES tech show in Las Vegas.
+
+Neon says it intends its virtual characters to act like digital "friends".
+
+However, one tech industry analyst told the BBC the demonstration failed to impress him.
+
+Ben Wood of CCS Insight said: "It was not the revolution that I was expecting."
+
+There had been great interest in Neon after the California-based outfit ran a viral teaser campaign across social media in the lead-up to the expo.
+
+Reddit users subsequently found links to videos of the characters hidden on the firm's website.
+
+Those have since been removed, but Neon has been showcasing some of its life-size "artificial humans" to CES attendees.
+
+Ivanka Trump unfazed by critics at tech show
+'Reverse microwave oven' cools drinks in seconds
+The electric bike that rides on water
+Its show exhibit features a row of large screens, on which the animated characters are displayed.
+
+'High expectations'
+Neon's chief executive Pranav Mistry claimed the digital avatars represent a new life-form.
+
+"There are millions of species on our planet and we hope to add one more," Mr Mistry told the press.
+
+He added that they have the ability to show emotions and intelligence, and can speak a wide range of languages.
+
+But Mr Wood said the virtual beings had the appearance of being little more than short video clips of real people.
+
+"They could get people to shake their head or do a selfie pose or whatever but that's the sort of thing you could pre-program in a video of an actor," said Mr Wood.
+
+"Expectations were exceedingly high. On visiting, it was hard to get excited at this stage."
+
+Larry Dignan at news site ZDNet also had reservations.
+
+He wrote that Neon's creations might be useful if deployed in public to greet shoppers or tourists.
+
+But he added that giving them a "brain" would be a bigger challenge than making them "picture-perfect".
+
+Neon has not yet revealed where the virtual characters will first appear in public.
+
+Catch up with all the BBC's CES 2020 coverage
+
+AI 'outperforms' doctors diagnosing breast cancer
+
+Artificial intelligence is more accurate than doctors in diagnosing breast cancer from mammograms, a study in the journal Nature suggests.
+
+An international team, including researchers from Google Health and Imperial College London, designed and trained a computer model on X-ray images from nearly 29,000 women.
+
+The algorithm outperformed six radiologists in reading mammograms.
+
+AI was still as good as two doctors working together.
+
+Unlike humans, AI is tireless. Experts say it could improve detection.
+
+How good is it?
+The current system in the NHS uses two radiologists to analyse each woman's X-rays. In rare cases where they disagree, a third doctor assesses the images.
+
+In the research study, an AI model was given anonymised images, so that the women could not be identified.
+
+Unlike the human experts, who had access to the patient's history, AI had only the mammograms to go on.
+
+The results showed that the AI model was as good as the current double-reading system of two doctors.
+
+And it was actually superior at spotting cancer than a single doctor.
+
+Compared to one radiologist, there was a reduction of 1.2% in false positives, when a mammogram is incorrectly diagnosed as abnormal.
+
+There was also a reduction of 2.7% in false negatives, where a cancer is missed.
+
+Dominic King from Google Health said: "Our team is really proud of these research findings, which suggest that we are on our way to developing a tool that can help clinicians spot breast cancer with greater accuracy."
+
+Most of the mammograms came from Cancer Research UK's OPTIMAM dataset collected from St George's Hospital London, the Jarvis Breast Centre in Guildford and Addenbrooke's Hospital, Cambridge.
+
+It takes over a decade of training as a doctor and specialist to become a radiologist, capable of interpreting mammograms.
+
+Reading X-rays is vital but time-consuming work, and there is an estimated shortage of more than 1,000 radiologists across the UK.
+
+Will AI take over from humans?
+No. It took humans to design and train the artificial intelligence model.
+
+This was a research study, and as yet the AI system has not been let loose in the clinic.
+
+Even when it is, at least one radiologist would remain in charge of diagnosis.
+
+But AI could largely do away with the need for dual reading of mammograms by two doctors, easing pressure on their workload, say researchers.
+
+Prof Ara Darzi, report co-author and director of the Cancer Research UK (CRUK) Imperial Centre, told the BBC: "This went far beyond my expectations. It will have a significant impact on improving the quality of reporting, and also free up radiologists to do even more important things."
+
+Women aged between 50 and 70 are invited for NHS breast screening every three years - those who are older can ask to be screened.
+
+The use of AI could eventually speed up diagnosis, as images can be analysed within seconds by the computer algorithm.
+
+Sara Hiom, director of cancer intelligence and early diagnosis at CRUK, told the BBC: "This is promising early research which suggests that in future it may be possible to make screening more accurate and efficient, which means less waiting and worrying for patients, and better outcomes."
+
+Helen Edwards, from Surrey, was diagnosed with breast cancer at the age of 44, before she was eligible for screening.
+
+She required surgery, chemotherapy and radiotherapy, but has been cancer-free for more than a decade.
+
+She was a patient representative on the CRUK panel which had to decide whether to grant Google Health permission to use the anonymised breast cancer data.
+
+Helen told the BBC: "Initially I was a bit concerned about what Google might do with the data, but it is stripped of all identifiers.
+
+"In the long term this can only benefit women.
+
+"Artificial intelligence machines don't get tired... they can work 24/7 whereas a human being can't do that, so to combine the two is a great idea."
