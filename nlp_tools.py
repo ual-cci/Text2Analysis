@@ -6,6 +6,7 @@ import numpy as np
 import os
 import re
 import shutil
+from zipfile import ZipFile
 
 from pprint import pprint
 import pandas as pd
@@ -92,15 +93,22 @@ class NLPTools(object):
         self.list_of_texts_data = sentences_lemmatized
         self.list_of_captions_data = None
 
+        self.stats_n_chars = len(raw_text_input)
+        self.stats_n_documents = len(self.list_of_texts_data)
+
     def load_list_of_data(self, list_of_texts_input, list_of_captions_input=None):
         print("Loaded",len(list_of_texts_input),"documents.")
 
         self.list_of_texts_data = list_of_texts_input
         self.list_of_captions_data = list_of_captions_input
 
+        self.stats_n_chars = sum([len(doc) for doc in list_of_texts_input])
+        self.stats_n_documents = len(list_of_texts_input)
+
+
     def restart_workspace(self):
         # restart / file cleanup!:
-        files = ["save.zip"]
+        files = ["save.zip", "templates/plots/LDA_Visualization.html"]
         for i in range(self.LDA_number_of_topics):
             files.append("static/wordclouds_"+str(i).zfill(2)+".png")
 
@@ -114,6 +122,21 @@ class NLPTools(object):
             os.makedirs(plot_dir)
         if not os.path.exists("data"):
             os.makedirs("data")
+
+    def zip_files(self, files_to_add):
+        print("zipping")
+        #output_filename = "save"
+        #dir_name = "templates/plots"
+        #shutil.make_archive(output_filename, 'zip', dir_name)
+
+        # create a ZipFile object
+        zipObj = ZipFile('save.zip', 'w')
+        for file in files_to_add:
+            arcname = file.split("/")[-1]
+            zipObj.write(file, arcname)
+            print("-added", file,"to zip as", arcname)
+        zipObj.close()
+
 
     def load_stopwords(self):
         # NLTK Stop words
@@ -248,10 +271,10 @@ class NLPTools(object):
 
     ### Main called functions
 
-    def analyze_raw_text(self):
+    def analyze_raw_text(self, number_of_topics=5):
         # Load input data
         data_lemmatized = self.list_of_texts_data
-        self.LDA_number_of_topics = 4
+        self.LDA_number_of_topics = number_of_topics
 
         # Prepare the workspace folders
         self.restart_workspace()
@@ -262,12 +285,16 @@ class NLPTools(object):
         self.prepare_lda_model(data_lemmatized)
 
         # Complete analysis
-        pyLDAviz_name = plot_dir + "LDA_Visualization.html"
+        pyLDAviz_name = "templates/plots/LDA_Visualization.html"
         self.analyze_pyLDA(pyLDAviz_name)
 
-        plot_dir = "static/"
-        NAME_wordclouds = plot_dir + "wordclouds_"  # +i+.png
+        NAME_wordclouds = "static/wordclouds_"  # +i+.png
         self.analyze_wordclouds(NAME_wordclouds)
+
+        files_to_zip = [pyLDAviz_name]
+        for i in range(self.LDA_number_of_topics):
+            files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
+        self.zip_files(files_to_zip)
 
         return "Analysis ready!"
 

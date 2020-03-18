@@ -15,12 +15,15 @@ class AnalysisHandler(object):
         self.input_text = text
         print("Loaded text with", len(text), "characters!")
 
-    def call_analysis_raw_text(self):
+    def call_analysis_raw_text(self, number_of_topics):
         self.nlp_tools.load_splitting_by_sentences(self.input_text)
         #return self.nlp_tools.analyze_full_bak() # older
-        reply = self.nlp_tools.analyze_raw_text()
+        reply = self.nlp_tools.analyze_raw_text(number_of_topics)
         n_topics = self.nlp_tools.LDA_number_of_topics
-        return reply, n_topics
+        n_chars = self.nlp_tools.stats_n_chars
+        n_documents = self.nlp_tools.stats_n_documents
+
+        return reply, n_topics, n_chars, n_documents
 
 
 """
