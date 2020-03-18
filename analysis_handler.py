@@ -18,7 +18,9 @@ class AnalysisHandler(object):
     def call_analysis_raw_text(self):
         self.nlp_tools.load_splitting_by_sentences(self.input_text)
         #return self.nlp_tools.analyze_full_bak() # older
-        return self.nlp_tools.analyze_raw_text()
+        reply = self.nlp_tools.analyze_raw_text()
+        n_topics = self.nlp_tools.LDA_number_of_topics
+        return reply, n_topics
 
 
 """

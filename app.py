@@ -1,6 +1,6 @@
 from flask import Flask, session, redirect, url_for, request, render_template, send_file
 from analysis_handler import AnalysisHandler
-import os
+import os, random
 
 app = Flask(__name__)
 
@@ -29,7 +29,7 @@ def process(user_input=None):
         analysis_handler = AnalysisHandler(settings)
 
         analysis_handler.load_text(user_input)
-        analysis_reply = analysis_handler.call_analysis_raw_text()
+        analysis_reply, n_topics = analysis_handler.call_analysis_raw_text()
 
         preview = user_input[0:20]+"..."
     else:
@@ -37,9 +37,10 @@ def process(user_input=None):
 
         preview = None
         analysis_reply = None
+        n_topics = 0
 
     # Show results ...
-    return render_template('process.html', user_input=preview, analysis_reply=analysis_reply)
+    return render_template('process.html', user_input=preview, analysis_reply=analysis_reply, n_topics=n_topics, rand_i = random.randint(1,9999))
 
 
 @app.route('/last', methods=['GET', 'POST'])

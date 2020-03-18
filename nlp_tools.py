@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')
+
 from nlp_functions import *
 import numpy as np
 import os
@@ -97,7 +100,10 @@ class NLPTools(object):
 
     def restart_workspace(self):
         # restart / file cleanup!:
-        files = ["save.zip", "templates/plots/wordclouds_00.png", "templates/plots/wordclouds_01.png", "templates/plots/wordclouds_02.png", "templates/plots/wordclouds_03.png"]
+        files = ["save.zip"]
+        for i in range(self.LDA_number_of_topics):
+            files.append("static/wordclouds_"+str(i).zfill(2)+".png")
+
         for file in files:
             if os.path.exists(file):
                 os.remove(file)
@@ -259,6 +265,7 @@ class NLPTools(object):
         pyLDAviz_name = plot_dir + "LDA_Visualization.html"
         self.analyze_pyLDA(pyLDAviz_name)
 
+        plot_dir = "static/"
         NAME_wordclouds = plot_dir + "wordclouds_"  # +i+.png
         self.analyze_wordclouds(NAME_wordclouds)
 

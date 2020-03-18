@@ -21,5 +21,16 @@
 {% endif %}
 </div>
 
+<div>
+  <p>Wordclouds:</p>
+
+{% for i in range(n_topics) %}
+ <span><img src="static/wordclouds_{{ '%02d' % i }}.png?v={{rand_i}}" width="200px"></span>
+{% endfor %}
+
+
+
+</div>
+
 {% endblock %}
 
