@@ -23,6 +23,7 @@ def process(user_input=None):
 
         analysis_handler.load_text(user_input)
         analysis_reply = analysis_handler.call_analysis()
+        #analysis_reply = analysis_handler.call_pyLDA_viz()
 
         preview = user_input[0:20]+"..."
     else:
