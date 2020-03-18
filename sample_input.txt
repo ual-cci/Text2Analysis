@@ -1,146 +1,77 @@
-Smart cities: How data and artificial intelligence could change London
+Computer-based weather forecast: New algorithm outperforms mainframe computer systems
 
-With growing pressure to cut carbon emissions and reduce the number of vehicles on the road, some small cameras could help provide the answer to London's emission woes.
+The exponential growth in computer processing power seen over the past 60 years may soon come to a halt. Complex systems such as those used in weather forecast, for example, require high computing capacities, but the costs for running supercomputers to process large quantities of data can become a limiting factor. Researchers have recently unveiled an algorithm that can solve complex problems with remarkable facility -- even on a personal computer.
 
-You could easily miss it.
+The exponential growth in computer processing power seen over the past 60 years may soon come to a halt. Complex systems such as those used in weather forecast, for example, require high computing capacities, but the costs for running supercomputers to process large quantities of data can become a limiting factor. Researchers at Johannes Gutenberg University Mainz (JGU) in Germany and UniversitĂ  della Svizzera italiana (USI) in Lugano in Switzerland have recently unveiled an algorithm that can solve complex problems with remarkable facility -- even on a personal computer.
 
-It's a small triangular grey box high up on a lamp-post but it could hold the key to big changes on London's streets.
+Exponential growth in IT will reach its limit
 
-These are scanners counting who is using the road and how.
+In the past, we have seen a constant rate of acceleration in information processing power as predicted by Moore's Law, but it now looks as if this exponential rate of growth is limited. New developments rely on artificial intelligence and machine learning, but the related processes are largely not well-known and understood. "Many machine learning methods, such as the very popular deep learning, are very successful, but work like a black box, which means that we don't know exactly what is going on. We wanted to understand how artificial intelligence works and gain a better understanding of the connections involved," said Professor Susanne Gerber, a specialist in bioinformatics at Mainz University. Together with Professor Illia Horenko, a computer expert at UniversitĂ  della Svizzera italiana and a Mercator Fellow of Freie UniversitĂ¤t Berlin, she has developed a technique for carrying out incredibly complex calculations at low cost and with high reliability. Gerber and Horenko, along with their co-authors, have summarized their concept in an article entitled "Low-cost scalable discretization, prediction, and feature selection for complex systems" recently published in Science Advances. "This method enables us to carry out tasks on a standard PC that previously would have required a supercomputer," emphasized Horenko. In addition to weather forecasts, the research see numerous possible applications such as in solving classification problems in bioinformatics, image analysis, and medical diagnostics.
 
-The computer is learning all the time, so much so that it has a 98% accuracy rate in identifying vehicles and people.
+Breaking down complex systems into individual components
 
-Previously, transport planners used people to do manual data counts which were more unreliable and could only provide a snapshot of who was using the road.
+The paper presented is the result of many years of work on the development of this new approach. According to Gerber and Horenko, the process is based on the Lego principle, according to which complex systems are broken down into discrete states or patterns. With only a few patterns or components, i.e., three or four dozen, large volumes of data can be analyzed and their future behavior can be predicted. "For example, using the SPA algorithm we could make a data-based forecast of surface temperatures in Europe for the day ahead and have a prediction error of only 0.75 degrees Celsius," said Gerber. It all works on an ordinary PC and has an error rate that is 40 percent better than the computer systems usually used by weather services, whilst also being much cheaper.
 
-The new system can run 24 hours a day, seven days a week and is part of what is called the "smart city" revolution.
+SPA or Scalable Probabilistic Approximation is a mathematically-based concept. The method could be useful in various situations that require large volumes of data to be processed automatically, such as in biology, for example, when a large number of cells need to be classified and grouped. "What is particularly useful about the result is that we can then get an understanding of what characteristics were used to sort the cells," added Gerber. Another potential area of application is neuroscience. Automated analysis of EEG signals could form the basis for assessments of cerebral status. It could even be used in breast cancer diagnosis, as mammography images could be analyzed to predict the results of a possible biopsy.
 
-Radically change
-As cities try to encourage environmental forms of getting around such as walking and cycling, many are being redesigned to make that easier and safer.
+"The SPA algorithm can be applied in a number of fields, from the Lorenz model to the molecular dynamics of amino acids in water," concluded Horenko. "The process is easier and cheaper and the results are also better compared to those produced by the current state-of-the-art supercomputers."
 
-In London, the mayor's Transport Strategy has a target of 80% of journeys in London to be made by walking, cycling and public transport by 2041.
+Living robots built using frog cells
 
-Using the data from these scanners, planners would be able to change streets and target investment.
+Tiny 'xenobots' assembled from cells promise advances from drug delivery to toxic waste clean-up
 
-For example on a feed of Millbank, it becomes obvious from the data that hardly any pedestrians use the pavement by the river. Is there a barrier to pedestrians getting there? Should there be a pedestrian crossing?
+Scientists repurposed living frog cells -- and assembled them into entirely new life-forms. These tiny 'xenobots' can move toward a target and heal themselves after being cut. These novel living machines are neither a traditional robot nor a known species of animal. They're a new class of artifact: a living, programmable organism.
 
-If the data shows high numbers of cyclists on one road, could investment be targeted there to provide a bike lane? If buses are being held up at a junction, could that be redesigned?
+A book is made of wood. But it is not a tree. The dead cells have been repurposed to serve another need.
 
-There is also the potential to link up the scanners to traffic signals to manage demand on the network.
+Now a team of scientists has repurposed living cells -- scraped from frog embryos -- and assembled them into entirely new life-forms. These millimeter-wide "xenobots" can move toward a target, perhaps pick up a payload (like a medicine that needs to be carried to a specific place inside a patient) -- and heal themselves after being cut.
 
-Transport for London (TfL) says all the video, which is part of a two-year trial with Vivacity, is discarded within seconds, meaning no personal data is stored.
+"These are novel living machines," says Joshua Bongard, a computer scientist and robotics expert at the University of Vermont who co-led the new research. "They're neither a traditional robot nor a known species of animal. It's a new class of artifact: a living, programmable organism."
 
-Glynn Barton, TfL's director of network management, said: "We're always looking for innovative new ways of making our roads safer and more efficient.
+The new creatures were designed on a supercomputer at UVM -- and then assembled and tested by biologists at Tufts University. "We can imagine many useful applications of these living robots that other machines can't do," says co-leader Michael Levin who directs the Center for Regenerative and Developmental Biology at Tufts, "like searching out nasty compounds or radioactive contamination, gathering microplastic in the oceans, traveling in arteries to scrape out plaque."
 
-"New data from trials such as this will be really valuable as we invest and make day-to-day decisions to enable more people to walk and cycle."
+The results of the new research were published January 13 in the Proceedings of the National Academy of Sciences.
 
-It is early days but the use of this kind of data has the potential to radically change London's streetscapes.
+Bespoke Living Systems
 
-Other cities will be watching closely.
+People have been manipulating organisms for human benefit since at least the dawn of agriculture, genetic editing is becoming widespread, and a few artificial organisms have been manually assembled in the past few years -- copying the body forms of known animals.
 
-CES 2020: Neon's artificial humans 'don't live up to hype'
+But this research, for the first time ever, "designs completely biological machines from the ground up," the team writes in their new study.
 
-"Artificial humans" - virtual characters - have been shown off by Samsung-backed start-up Neon at the CES tech show in Las Vegas.
+With months of processing time on the Deep Green supercomputer cluster at UVM's Vermont Advanced Computing Core, the team -- including lead author and doctoral student Sam Kriegman -- used an evolutionary algorithm to create thousands of candidate designs for the new life-forms. Attempting to achieve a task assigned by the scientists -- like locomotion in one direction -- the computer would, over and over, reassemble a few hundred simulated cells into myriad forms and body shapes. As the programs ran -- driven by basic rules about the biophysics of what single frog skin and cardiac cells can do -- the more successful simulated organisms were kept and refined, while failed designs were tossed out. After a hundred independent runs of the algorithm, the most promising designs were selected for testing.
 
-Neon says it intends its virtual characters to act like digital "friends".
+Then the team at Tufts, led by Levin and with key work by microsurgeon Douglas Blackiston -- transferred the in silico designs into life. First they gathered stem cells, harvested from the embryos of African frogs, the species Xenopus laevis. (Hence the name "xenobots.") These were separated into single cells and left to incubate. Then, using tiny forceps and an even tinier electrode, the cells were cut and joined under a microscope into a close approximation of the designs specified by the computer.
 
-However, one tech industry analyst told the BBC the demonstration failed to impress him.
+Assembled into body forms never seen in nature, the cells began to work together. The skin cells formed a more passive architecture, while the once-random contractions of heart muscle cells were put to work creating ordered forward motion as guided by the computer's design, and aided by spontaneous self-organizing patterns -- allowing the robots to move on their own.
 
-Ben Wood of CCS Insight said: "It was not the revolution that I was expecting."
+These reconfigurable organisms were shown to be able move in a coherent fashion -- and explore their watery environment for days or weeks, powered by embryonic energy stores. Turned over, however, they failed, like beetles flipped on their backs.
 
-There had been great interest in Neon after the California-based outfit ran a viral teaser campaign across social media in the lead-up to the expo.
+Later tests showed that groups of xenobots would move around in circles, pushing pellets into a central location -- spontaneously and collectively. Others were built with a hole through the center to reduce drag. In simulated versions of these, the scientists were able to repurpose this hole as a pouch to successfully carry an object. "It's a step toward using computer-designed organisms for intelligent drug delivery," says Bongard, a professor in UVM's Department of Computer Science and Complex Systems Center.
 
-Reddit users subsequently found links to videos of the characters hidden on the firm's website.
+Living Technologies
 
-Those have since been removed, but Neon has been showcasing some of its life-size "artificial humans" to CES attendees.
+Many technologies are made of steel, concrete or plastic. That can make them strong or flexible. But they also can create ecological and human health problems, like the growing scourge of plastic pollution in the oceans and the toxicity of many synthetic materials and electronics. "The downside of living tissue is that it's weak and it degrades," say Bongard. "That's why we use steel. But organisms have 4.5 billion years of practice at regenerating themselves and going on for decades." And when they stop working -- death -- they usually fall apart harmlessly. "These xenobots are fully biodegradable," say Bongard, "when they're done with their job after seven days, they're just dead skin cells."
 
-Ivanka Trump unfazed by critics at tech show
-'Reverse microwave oven' cools drinks in seconds
-The electric bike that rides on water
-Its show exhibit features a row of large screens, on which the animated characters are displayed.
+Your laptop is a powerful technology. But try cutting it in half. Doesn't work so well. In the new experiments, the scientists cut the xenobots and watched what happened. "We sliced the robot almost in half and it stitches itself back up and keeps going," says Bongard. "And this is something you can't do with typical machines."
 
-'High expectations'
-Neon's chief executive Pranav Mistry claimed the digital avatars represent a new life-form.
+Cracking the Code
 
-"There are millions of species on our planet and we hope to add one more," Mr Mistry told the press.
+Both Levin and Bongard say the potential of what they've been learning about how cells communicate and connect extends deep into both computational science and our understanding of life. "The big question in biology is to understand the algorithms that determine form and function," says Levin. "The genome encodes proteins, but transformative applications await our discovery of how that hardware enables cells to cooperate toward making functional anatomies under very different conditions."
 
-He added that they have the ability to show emotions and intelligence, and can speak a wide range of languages.
+To make an organism develop and function, there is a lot of information sharing and cooperation -- organic computation -- going on in and between cells all the time, not just within neurons. These emergent and geometric properties are shaped by bioelectric, biochemical, and biomechanical processes, "that run on DNA-specified hardware," Levin says, "and these processes are reconfigurable, enabling novel living forms."
 
-But Mr Wood said the virtual beings had the appearance of being little more than short video clips of real people.
+The scientists see the work presented in their new PNAS study -- "A scalable pipeline for designing reconfigurable organisms," -- as one step in applying insights about this bioelectric code to both biology and computer science. "What actually determines the anatomy towards which cells cooperate?" Levin asks. "You look at the cells we've been building our xenobots with, and, genomically, they're frogs. It's 100% frog DNA -- but these are not frogs. Then you ask, well, what else are these cells capable of building?"
 
-"They could get people to shake their head or do a selfie pose or whatever but that's the sort of thing you could pre-program in a video of an actor," said Mr Wood.
+"As we've shown, these frog cells can be coaxed to make interesting living forms that are completely different from what their default anatomy would be," says Levin. He and the other scientists in the UVM and Tufts team -- with support from DARPA's Lifelong Learning Machines program and the National Science Foundation -- believe that building the xenobots is a small step toward cracking what he calls the "morphogenetic code," providing a deeper view of the overall way organisms are organized -- and how they compute and store information based on their histories and environment.
 
-"Expectations were exceedingly high. On visiting, it was hard to get excited at this stage."
+Future Shocks
 
-Larry Dignan at news site ZDNet also had reservations.
+Many people worry about the implications of rapid technological change and complex biological manipulations. "That fear is not unreasonable," Levin says. "When we start to mess around with complex systems that we don't understand, we're going to get unintended consequences." A lot of complex systems, like an ant colony, begin with a simple unit -- an ant -- from which it would be impossible to predict the shape of their colony or how they can build bridges over water with their interlinked bodies.
 
-He wrote that Neon's creations might be useful if deployed in public to greet shoppers or tourists.
+"If humanity is going to survive into the future, we need to better understand how complex properties, somehow, emerge from simple rules," says Levin. Much of science is focused on "controlling the low-level rules. We also need to understand the high-level rules," he says. "If you wanted an anthill with two chimneys instead of one, how do you modify the ants? We'd have no idea."
 
-But he added that giving them a "brain" would be a bigger challenge than making them "picture-perfect".
+"I think it's an absolute necessity for society going forward to get a better handle on systems where the outcome is very complex," Levin says. "A first step towards doing that is to explore: how do living systems decide what an overall behavior should be and how do we manipulate the pieces to get the behaviors we want?"
 
-Neon has not yet revealed where the virtual characters will first appear in public.
+In other words, "this study is a direct contribution to getting a handle on what people are afraid of, which is unintended consequences," Levin says -- whether in the rapid arrival of self-driving cars, changing gene drives to wipe out whole lineages of viruses, or the many other complex and autonomous systems that will increasingly shape the human experience.
 
-Catch up with all the BBC's CES 2020 coverage
-
-AI 'outperforms' doctors diagnosing breast cancer
-
-Artificial intelligence is more accurate than doctors in diagnosing breast cancer from mammograms, a study in the journal Nature suggests.
-
-An international team, including researchers from Google Health and Imperial College London, designed and trained a computer model on X-ray images from nearly 29,000 women.
-
-The algorithm outperformed six radiologists in reading mammograms.
-
-AI was still as good as two doctors working together.
-
-Unlike humans, AI is tireless. Experts say it could improve detection.
-
-How good is it?
-The current system in the NHS uses two radiologists to analyse each woman's X-rays. In rare cases where they disagree, a third doctor assesses the images.
-
-In the research study, an AI model was given anonymised images, so that the women could not be identified.
-
-Unlike the human experts, who had access to the patient's history, AI had only the mammograms to go on.
-
-The results showed that the AI model was as good as the current double-reading system of two doctors.
-
-And it was actually superior at spotting cancer than a single doctor.
-
-Compared to one radiologist, there was a reduction of 1.2% in false positives, when a mammogram is incorrectly diagnosed as abnormal.
-
-There was also a reduction of 2.7% in false negatives, where a cancer is missed.
-
-Dominic King from Google Health said: "Our team is really proud of these research findings, which suggest that we are on our way to developing a tool that can help clinicians spot breast cancer with greater accuracy."
-
-Most of the mammograms came from Cancer Research UK's OPTIMAM dataset collected from St George's Hospital London, the Jarvis Breast Centre in Guildford and Addenbrooke's Hospital, Cambridge.
-
-It takes over a decade of training as a doctor and specialist to become a radiologist, capable of interpreting mammograms.
-
-Reading X-rays is vital but time-consuming work, and there is an estimated shortage of more than 1,000 radiologists across the UK.
-
-Will AI take over from humans?
-No. It took humans to design and train the artificial intelligence model.
-
-This was a research study, and as yet the AI system has not been let loose in the clinic.
-
-Even when it is, at least one radiologist would remain in charge of diagnosis.
-
-But AI could largely do away with the need for dual reading of mammograms by two doctors, easing pressure on their workload, say researchers.
-
-Prof Ara Darzi, report co-author and director of the Cancer Research UK (CRUK) Imperial Centre, told the BBC: "This went far beyond my expectations. It will have a significant impact on improving the quality of reporting, and also free up radiologists to do even more important things."
-
-Women aged between 50 and 70 are invited for NHS breast screening every three years - those who are older can ask to be screened.
-
-The use of AI could eventually speed up diagnosis, as images can be analysed within seconds by the computer algorithm.
-
-Sara Hiom, director of cancer intelligence and early diagnosis at CRUK, told the BBC: "This is promising early research which suggests that in future it may be possible to make screening more accurate and efficient, which means less waiting and worrying for patients, and better outcomes."
-
-Helen Edwards, from Surrey, was diagnosed with breast cancer at the age of 44, before she was eligible for screening.
-
-She required surgery, chemotherapy and radiotherapy, but has been cancer-free for more than a decade.
-
-She was a patient representative on the CRUK panel which had to decide whether to grant Google Health permission to use the anonymised breast cancer data.
-
-Helen told the BBC: "Initially I was a bit concerned about what Google might do with the data, but it is stripped of all identifiers.
-
-"In the long term this can only benefit women.
-
-"Artificial intelligence machines don't get tired... they can work 24/7 whereas a human being can't do that, so to combine the two is a great idea."
+"There's all of this innate creativity in life," says UVM's Josh Bongard. "We want to understand that more deeply -- and how we can direct and push it toward new forms."
