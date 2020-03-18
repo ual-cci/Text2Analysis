@@ -3,6 +3,12 @@ heroku login
 heroku create previtus-nlp-api-heroku
 heroku buildpacks:set heroku/python
 
+
+# When moving on another machine this is necessary:
+heroku login
+heroku git:remote -a previtus-nlp-api-heroku
+
+
 # On update:
 git push heroku master
 
