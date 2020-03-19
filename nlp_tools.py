@@ -274,6 +274,8 @@ class NLPTools(object):
             plt.tight_layout()
             plt.savefig(NAME_wordclouds + str(topic_i).zfill(2) + ".png")
             plt.close()
+
+            del cloud
         print("-done")
 
     ### Main called functions
@@ -293,12 +295,13 @@ class NLPTools(object):
 
         # Complete analysis
         pyLDAviz_name = "templates/plots/LDA_Visualization.html"
-        self.analyze_pyLDA(pyLDAviz_name)
+        ###self.analyze_pyLDA(pyLDAviz_name) # HAX SKIP
 
         NAME_wordclouds = "static/wordclouds_"  # +i+.png
         self.analyze_wordclouds(NAME_wordclouds)
 
-        files_to_zip = [pyLDAviz_name]
+        files_to_zip = [pyLDAviz_name] # HAX SKIP
+        files_to_zip = []
         for i in range(self.LDA_number_of_topics):
             files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
         self.zip_files(files_to_zip)
