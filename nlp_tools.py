@@ -301,11 +301,11 @@ class NLPTools(object):
         self.analyze_pyLDA(pyLDAviz_name)
 
         NAME_wordclouds = "static/wordclouds_"  # +i+.png
-        #self.analyze_wordclouds(NAME_wordclouds)  # HAX SKIP
+        self.analyze_wordclouds(NAME_wordclouds)
 
         files_to_zip = [pyLDAviz_name]
-        #for i in range(self.LDA_number_of_topics):
-        #    files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
+        for i in range(self.LDA_number_of_topics):
+            files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
         self.zip_files(files_to_zip)
 
         return "Analysis ready!"
