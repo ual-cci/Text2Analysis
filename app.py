@@ -54,7 +54,7 @@ def processing_function_extracted(user_input, number_of_topics):
     LAST_ANALYSIS_N_TOPICS = n_topics
     return analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
 
-@app.route('/process', methods=['GET', 'POST'])
+@app.route('/processOL', methods=['GET', 'POST'])
 def process(user_input=None):
     if request.method == 'POST':
         user_input = request.form['user_input']
@@ -85,7 +85,7 @@ def some_long_calculation(number):
 
     return number
 
-@app.route('/processLONG', methods=['GET', 'POST'])
+@app.route('/process', methods=['GET', 'POST'])
 def check():
     if request.method == 'POST':
         user_input = request.form['user_input']
@@ -93,10 +93,11 @@ def check():
 
 
     def generate(user_input, number_of_topics):
-      yield "Started"   # notice that we are yielding something as soon as possible
+      yield "Started ... please wait ... (up to 55 seconds!)"   # notice that we are yielding something as soon as possible
 
       analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = processing_function_extracted(user_input, number_of_topics)
       answer = analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
+      answer = "Finished! Please look at the <a href='last'>results</a>" # html like returned to Response
       yield answer
     return Response(generate(user_input, number_of_topics), mimetype='text/html')
 
