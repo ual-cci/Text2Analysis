@@ -75,6 +75,13 @@ class NLPTools(object):
         self.corpus = None
         self.lda_model = None
 
+    def cleanup(self):
+        del self.list_of_texts_data
+        del self.list_of_captions_data
+        del self.id2word
+        del self.corpus
+        del self.lda_model
+
     ### Helper functions:
 
     def load_splitting_by_sentences(self, raw_text_input):
@@ -218,8 +225,8 @@ class NLPTools(object):
         self.id2word = corpora.Dictionary(data_lemmatized)
         self.corpus = [self.id2word.doc2bow(text) for text in data_lemmatized]
 
-        if self.verbose > 0:
-            print("Building/Loading LDA model (takes time)")
+        #if self.verbose > 0:
+        print("Building/Loading LDA model (this takes time) with", self.LDA_number_of_topics, "topics")
 
         self.lda_model = gensim.models.ldamodel.LdaModel(corpus=self.corpus, id2word=self.id2word, num_topics=self.LDA_number_of_topics,
                                                         random_state=100, update_every=1, chunksize=100, passes=10,

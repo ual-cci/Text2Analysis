@@ -1,9 +1,11 @@
-from flask import Flask, session, redirect, url_for, request, render_template, send_file
+from flask import Flask, session, redirect, url_for, request, render_template, send_file, Response
 from analysis_handler import AnalysisHandler
 import os, random
 from timeit import default_timer as timer
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['TEMPLATES_AUTO_RELOAD'] = True # nice, this one works to update /pyldaviz when the analysis changes it
 
 LAST_ANALYSIS_N_TOPICS = 0
 
@@ -22,29 +24,36 @@ def enter():
         print("Failed to load sample_input.txt, loading default text string.")
     return render_template('enter.html', sample_text = sample_text)
 
+def processing_function_extracted(user_input, number_of_topics):
+    start_analysis = timer()
+
+    # Start processing
+    settings = None
+    analysis_handler = AnalysisHandler(settings)
+
+    analysis_handler.load_text(user_input)
+    analysis_reply, n_topics, n_chars, n_documents = analysis_handler.call_analysis_raw_text(number_of_topics)
+
+    analysis_handler.cleanup() # cleanup so that we regain the memory on server ...
+    del analysis_handler
+
+    end_analysis = timer()
+    n_seconds_analysis = (end_analysis - start_analysis)
+    print("This analysis took " + str(n_seconds_analysis) + "s (" + str(n_seconds_analysis / 60.0) + "min)")
+    n_seconds_analysis = float(int(n_seconds_analysis * 100.0)) / 100.0
+
+
+    global LAST_ANALYSIS_N_TOPICS
+    LAST_ANALYSIS_N_TOPICS = n_topics
+    return analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
+
 @app.route('/process', methods=['GET', 'POST'])
 def process(user_input=None):
     if request.method == 'POST':
         user_input = request.form['user_input']
         number_of_topics = int(request.form['number_of_topics'])
 
-        # TODO: Process data here ...
-        settings = None
-        analysis_handler = AnalysisHandler(settings)
-
-        start_analysis = timer()
-
-        analysis_handler.load_text(user_input)
-        analysis_reply, n_topics, n_chars, n_documents = analysis_handler.call_analysis_raw_text(number_of_topics)
-
-        global LAST_ANALYSIS_N_TOPICS
-        LAST_ANALYSIS_N_TOPICS = n_topics
-
-        end_analysis = timer()
-        n_seconds_analysis = (end_analysis - start_analysis)
-        print("This analysis took " + str(n_seconds_analysis) + "s (" + str(n_seconds_analysis / 60.0) + "min)")
-
-        n_seconds_analysis = float(int(n_seconds_analysis * 100.0))/100.0
+        analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = processing_function_extracted(user_input, number_of_topics)
 
         preview = user_input[0:20]+"..."
     else:
@@ -61,6 +70,33 @@ def process(user_input=None):
     return render_template('process.html', user_input=preview, analysis_reply=analysis_reply, n_topics=n_topics,
                            n_chars = n_chars, n_documents = n_documents, n_seconds_analysis = n_seconds_analysis,
                            rand_i = random.randint(1,9999))
+
+
+
+
+def some_long_calculation(number):
+
+    return number
+
+@app.route('/processLONG', methods=['GET', 'POST'])
+def check():
+    if request.method == 'POST':
+        user_input = request.form['user_input']
+        number_of_topics = int(request.form['number_of_topics'])
+
+
+    def generate(user_input, number_of_topics):
+      yield "Started"   # notice that we are yielding something as soon as possible
+
+      analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = processing_function_extracted(user_input, number_of_topics)
+      answer = analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
+      yield answer
+    return Response(generate(user_input, number_of_topics), mimetype='text/html')
+
+    #return render_template('process.html', user_input=preview, analysis_reply=analysis_reply, n_topics=n_topics,
+    #                       n_chars = n_chars, n_documents = n_documents, n_seconds_analysis = n_seconds_analysis,
+    #                       rand_i = random.randint(1,9999))
+
 
 
 @app.route('/last', methods=['GET', 'POST'])

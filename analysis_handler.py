@@ -25,6 +25,11 @@ class AnalysisHandler(object):
 
         return reply, n_topics, n_chars, n_documents
 
+    def cleanup(self):
+        self.nlp_tools.cleanup()
+        del self.nlp_tools
+        del self.input_text
+
 
 """
 # v1a
