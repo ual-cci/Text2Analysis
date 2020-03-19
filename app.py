@@ -55,9 +55,9 @@ def processing_function_extracted(user_input, number_of_topics):
     print("This analysis took " + str(n_seconds_analysis) + "s (" + str(n_seconds_analysis / 60.0) + "min)")
     n_seconds_analysis = float(int(n_seconds_analysis * 100.0)) / 100.0
 
-    # test more than 30 sec ...
+    # test long processing times ...
     # refer to https://librenepal.com/article/flask-and-heroku-timeout/
-    t_to_wait = 35
+    t_to_wait = 140
     #t_to_wait = 0
     t_rem = int(max(t_to_wait - n_seconds_analysis, 0))
     print("waiting for extra", t_rem, "sec!")
@@ -127,7 +127,7 @@ def check():
             time.sleep(sec_wait)
 
         #analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = async_answer
-        answer = "Finished! Please look at the <a href='last'>results</a>" # html like returned to Response
+        answer = "<br><br><h2>Finished! Please look at the <a href='last'>results</a></h2>" # html like returned to Response
         yield answer
 
     return Response(generate(user_input, number_of_topics), mimetype='text/html')
