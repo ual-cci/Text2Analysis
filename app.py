@@ -42,6 +42,13 @@ def processing_function_extracted(user_input, number_of_topics):
     print("This analysis took " + str(n_seconds_analysis) + "s (" + str(n_seconds_analysis / 60.0) + "min)")
     n_seconds_analysis = float(int(n_seconds_analysis * 100.0)) / 100.0
 
+    # test more than 30 sec ...
+    # refer to https://librenepal.com/article/flask-and-heroku-timeout/
+    t_to_wait = 35
+    t_rem = int(max(t_to_wait - n_seconds_analysis, 0))
+    print("waiting for extra", t_rem, "sec!")
+    import time
+    time.sleep(t_rem)
 
     global LAST_ANALYSIS_N_TOPICS
     LAST_ANALYSIS_N_TOPICS = n_topics
