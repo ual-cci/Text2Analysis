@@ -55,6 +55,7 @@ def processing_function_extracted(user_input, number_of_topics):
     print("This analysis took " + str(n_seconds_analysis) + "s (" + str(n_seconds_analysis / 60.0) + "min)")
     n_seconds_analysis = float(int(n_seconds_analysis * 100.0)) / 100.0
 
+    """
     # test long processing times ...
     # refer to https://librenepal.com/article/flask-and-heroku-timeout/
     t_to_wait = 140
@@ -63,6 +64,7 @@ def processing_function_extracted(user_input, number_of_topics):
     print("waiting for extra", t_rem, "sec!")
     import time
     time.sleep(t_rem)
+    """
 
     global LAST_ANALYSIS_N_TOPICS
     LAST_ANALYSIS_N_TOPICS = n_topics
@@ -105,7 +107,7 @@ def check():
         number_of_topics = int(request.form['number_of_topics'])
 
     def generate(user_input, number_of_topics):
-        yield "Started ... please wait ... (up to 55 seconds!)<br>"  # notice that we are yielding something as soon as possible
+        yield "Started ... please wait ... <br><br>"  # notice that we are yielding something as soon as possible
 
         global async_ready_flag
         async_ready_flag = False
