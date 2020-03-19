@@ -15,7 +15,7 @@
 
   <h2 class="title">Analysis of the text:</h2>
   <p>
-    Text of {{ n_chars }} characters, processed as {{ n_documents }} sentences (or documents). The analysis took {{ n_seconds_analysis }} seconds.
+    Analysis of the last text:
   </p>
 
   <h2 class="title">Topic wordclouds analysis</h2>
@@ -31,16 +31,6 @@
   <h2 class="title">Download results:</h2>
   <p>See pyLDAviz fullscreen: <a href="pyldaviz?v={{rand_i}}">here</a>.</p>
   <p>Download all data: <a href="download?v={{rand_i}}">download as zip <img src="static/img/download-solid.svg" width="40px" alt="Download!"></a></p>
-
-
-
-
-  <h2 class="title">Analysis output / debug:</h2>
-  <div class="codeblock" style="background-color: #2b2b2b; color: #a9b7c6; padding: 20px;">
-    <code>
-    {% if analysis_reply %}{{ analysis_reply }}{% else %}(No message!){% endif %}
-    </code>
-  </div>
 
 </div>
 {% endblock %}

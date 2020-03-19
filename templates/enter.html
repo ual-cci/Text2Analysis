@@ -3,6 +3,23 @@
 {% block styles %}
     <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}" rel="stylesheet" type="text/css">-->
     <link rel="stylesheet" href="static/css/forms.css" rel="stylesheet" type="text/css">
+    <!--script to disable the submit button -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#textInputForm").submit(function () {
+            $(".submitBtn").attr("disabled", true);
+            $(".submitBtn").attr("value", "Processing please wait...");
+            return true;
+        });
+    });
+
+    </script>
+
+    <!--script ends here-->
+
 {% endblock %}
 
 
@@ -18,7 +35,7 @@
         You can either enter the text directly, or upload a text or csv file. Note that if you want to split your text data into separate documents (and not as a raw stream of text), you'll need to use the csv format placing every document's text on its own row.
     </p>
 
-    <form method="post" action="process">
+    <form method="post" action="process" id="textInputForm">
         <div class="form-field">
             <textarea name="user_input" rows="5">
 {% if sample_text %}{{ sample_text }}{% else %}(Couldn't load text data!){% endif %}
@@ -34,7 +51,7 @@
             <label for="number_of_topics">Select number of topics</label>
             <input id="number_of_topics" name="number_of_topics" type="number" value="5" min="1">
         </div>
-        <div class="form-field"><input type=submit value="Send text"></div>
+        <div class="form-field"><input class="submitBtn" type=submit value="Send text"></div>
     </form>
 
     <!--

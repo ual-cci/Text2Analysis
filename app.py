@@ -5,6 +5,8 @@ from timeit import default_timer as timer
 
 app = Flask(__name__)
 
+LAST_ANALYSIS_N_TOPICS = 0
+
 @app.route('/')
 def index():
     return redirect(url_for('enter'))
@@ -35,6 +37,9 @@ def process(user_input=None):
         analysis_handler.load_text(user_input)
         analysis_reply, n_topics, n_chars, n_documents = analysis_handler.call_analysis_raw_text(number_of_topics)
 
+        global LAST_ANALYSIS_N_TOPICS
+        LAST_ANALYSIS_N_TOPICS = n_topics
+
         end_analysis = timer()
         n_seconds_analysis = (end_analysis - start_analysis)
         print("This analysis took " + str(n_seconds_analysis) + "s (" + str(n_seconds_analysis / 60.0) + "min)")
@@ -60,6 +65,13 @@ def process(user_input=None):
 
 @app.route('/last', methods=['GET', 'POST'])
 def last():
+    global LAST_ANALYSIS_N_TOPICS
+
+    return render_template('last.html', n_topics=LAST_ANALYSIS_N_TOPICS, rand_i = random.randint(1,9999))
+    #return render_template('plots/LDA_Visualization.html')
+
+@app.route('/pyldaviz', methods=['GET', 'POST'])
+def pyldaviz():
     return render_template('plots/LDA_Visualization.html')
 
 @app.route('/download')
