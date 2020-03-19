@@ -110,13 +110,20 @@ def check():
         global async_ready_flag
         async_ready_flag = False
 
+        start = timer()
+
         #pool = Pool(processes=1)
         #result = pool.apply_async(processing_function_extracted, [user_input, number_of_topics], callback)  # Evaluate "processing_function_extracted" asynchronously calling callback when finished.
         threading.Thread(target=processing_function_extracted,args=[user_input, number_of_topics]).start()
 
         while not async_ready_flag:
+            current = timer()
+            so_far_waited = (current - start)
+            print("So far took " + str(so_far_waited) + "s (" + str(so_far_waited / 60.0) + "min)")
+            so_far_waited = float(int(so_far_waited * 100.0)) / 100.0
+
             sec_wait = 5
-            yield "Still running ... please wait ... (will check again in "+str(sec_wait)+" seconds)<br>"
+            yield "Still running (so far "+str(so_far_waited)+" seconds) ... please wait ... (will check again in "+str(sec_wait)+" seconds)<br>"
             time.sleep(sec_wait)
 
         #analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = async_answer
