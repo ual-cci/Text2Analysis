@@ -143,6 +143,7 @@ def check():
 @app.route('/last', methods=['GET', 'POST'])
 def last():
     global LAST_ANALYSIS_N_TOPICS
+    print("LAST_ANALYSIS_N_TOPICS=",LAST_ANALYSIS_N_TOPICS)
 
     return render_template('last.html', n_topics=LAST_ANALYSIS_N_TOPICS, rand_i = random.randint(1,9999))
     #return render_template('plots/LDA_Visualization.html')
