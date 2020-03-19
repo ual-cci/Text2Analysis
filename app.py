@@ -2,12 +2,19 @@ from flask import Flask, session, redirect, url_for, request, render_template, s
 from analysis_handler import AnalysisHandler
 import os, random
 from timeit import default_timer as timer
+#from multiprocessing import Pool
+#from multiprocessing.dummy import Pool
+import threading, time
+import time
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['TEMPLATES_AUTO_RELOAD'] = True # nice, this one works to update /pyldaviz when the analysis changes it
 
+# GLOBALS:
 LAST_ANALYSIS_N_TOPICS = 0
+async_ready_flag = False
+async_answer = None
 
 @app.route('/')
 def index():
@@ -25,6 +32,12 @@ def enter():
     return render_template('enter.html', sample_text = sample_text)
 
 def processing_function_extracted(user_input, number_of_topics):
+    print("-processing_function_extracted called!")
+
+    global async_answer, async_ready_flag
+    async_answer = None
+    async_ready_flag = False
+
     start_analysis = timer()
 
     # Start processing
@@ -45,6 +58,7 @@ def processing_function_extracted(user_input, number_of_topics):
     # test more than 30 sec ...
     # refer to https://librenepal.com/article/flask-and-heroku-timeout/
     t_to_wait = 35
+    #t_to_wait = 0
     t_rem = int(max(t_to_wait - n_seconds_analysis, 0))
     print("waiting for extra", t_rem, "sec!")
     import time
@@ -52,15 +66,20 @@ def processing_function_extracted(user_input, number_of_topics):
 
     global LAST_ANALYSIS_N_TOPICS
     LAST_ANALYSIS_N_TOPICS = n_topics
-    return analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
 
-@app.route('/processOL', methods=['GET', 'POST'])
+    async_answer = analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
+    async_ready_flag = True
+    #return analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
+
+@app.route('/processRenderTemplateVersion', methods=['GET', 'POST'])
 def process(user_input=None):
     if request.method == 'POST':
         user_input = request.form['user_input']
         number_of_topics = int(request.form['number_of_topics'])
 
-        analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = processing_function_extracted(user_input, number_of_topics)
+        processing_function_extracted(user_input, number_of_topics)
+        global async_answer
+        analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = async_answer
 
         preview = user_input[0:20]+"..."
     else:
@@ -79,26 +98,31 @@ def process(user_input=None):
                            rand_i = random.randint(1,9999))
 
 
-
-
-def some_long_calculation(number):
-
-    return number
-
 @app.route('/process', methods=['GET', 'POST'])
 def check():
     if request.method == 'POST':
         user_input = request.form['user_input']
         number_of_topics = int(request.form['number_of_topics'])
 
-
     def generate(user_input, number_of_topics):
-      yield "Started ... please wait ... (up to 55 seconds!)"   # notice that we are yielding something as soon as possible
+        yield "Started ... please wait ... (up to 55 seconds!)<br>"  # notice that we are yielding something as soon as possible
 
-      analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = processing_function_extracted(user_input, number_of_topics)
-      answer = analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
-      answer = "Finished! Please look at the <a href='last'>results</a>" # html like returned to Response
-      yield answer
+        global async_ready_flag
+        async_ready_flag = False
+
+        #pool = Pool(processes=1)
+        #result = pool.apply_async(processing_function_extracted, [user_input, number_of_topics], callback)  # Evaluate "processing_function_extracted" asynchronously calling callback when finished.
+        threading.Thread(target=processing_function_extracted,args=[user_input, number_of_topics]).start()
+
+        while not async_ready_flag:
+            sec_wait = 5
+            yield "Still running ... please wait ... (will check again in "+str(sec_wait)+" seconds)<br>"
+            time.sleep(sec_wait)
+
+        #analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = async_answer
+        answer = "Finished! Please look at the <a href='last'>results</a>" # html like returned to Response
+        yield answer
+
     return Response(generate(user_input, number_of_topics), mimetype='text/html')
 
     #return render_template('process.html', user_input=preview, analysis_reply=analysis_reply, n_topics=n_topics,
