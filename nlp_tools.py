@@ -21,8 +21,6 @@ from gensim.models import CoherenceModel
 import spacy
 
 # Plotting tools
-import pyLDAvis
-import pyLDAvis.gensim  # don't skip this
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from nltk.corpus import stopwords
@@ -242,8 +240,13 @@ class NLPTools(object):
             assert False
 
         print("Saving pyLDA visualization into > ", pyLDAviz_name)
+        import pyLDAvis
+        import pyLDAvis.gensim  # don't skip this
+
         vis = pyLDAvis.gensim.prepare(self.lda_model, self.corpus, self.id2word)
         pyLDAvis.save_html(vis, pyLDAviz_name)
+        del vis
+
         print("-done")
 
     def analyze_wordclouds(self, NAME_wordclouds):
@@ -295,15 +298,14 @@ class NLPTools(object):
 
         # Complete analysis
         pyLDAviz_name = "templates/plots/LDA_Visualization.html"
-        ###self.analyze_pyLDA(pyLDAviz_name) # HAX SKIP
+        self.analyze_pyLDA(pyLDAviz_name)
 
         NAME_wordclouds = "static/wordclouds_"  # +i+.png
-        self.analyze_wordclouds(NAME_wordclouds)
+        #self.analyze_wordclouds(NAME_wordclouds)  # HAX SKIP
 
-        files_to_zip = [pyLDAviz_name] # HAX SKIP
-        files_to_zip = []
-        for i in range(self.LDA_number_of_topics):
-            files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
+        files_to_zip = [pyLDAviz_name]
+        #for i in range(self.LDA_number_of_topics):
+        #    files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
         self.zip_files(files_to_zip)
 
         return "Analysis ready!"
