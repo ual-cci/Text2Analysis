@@ -223,6 +223,10 @@ def last():
 def pyldaviz():
     return render_template('plots/LDA_Visualization.html')
 
+@app.route('/tsne', methods=['GET', 'POST'])
+def tsne():
+    return render_template('plots/tsne.html')
+
 @app.route('/example_csv', methods=['GET', 'POST'])
 def example_csv():
     return send_file("static/examples/example_list_data_bbc-science-20-3-2020.csv", as_attachment=True)

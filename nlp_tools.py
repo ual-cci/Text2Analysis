@@ -122,9 +122,12 @@ class NLPTools(object):
     def shuffle(self):
         print("Shuffling data!")
 
-        c = list(zip(self.list_of_texts_data, self.list_of_captions_data))
-        random.shuffle(c)
-        self.list_of_texts_data, self.list_of_captions_data = zip(*c)
+        if self.list_of_captions_data is not None:
+            c = list(zip(self.list_of_texts_data, self.list_of_captions_data))
+            random.shuffle(c)
+            self.list_of_texts_data, self.list_of_captions_data = zip(*c)
+        else:
+            random.shuffle(self.list_of_texts_data)
 
     def restart_workspace(self):
         # restart / file cleanup!:
@@ -296,6 +299,71 @@ class NLPTools(object):
             del cloud
         print("-done")
 
+    def analyze_tsne(self,NAME_tsne):
+        print("Saving TSNE visualization into >", NAME_tsne)
+
+        from sklearn.manifold import TSNE
+        from bokeh.plotting import figure, output_file, show, save, ColumnDataSource
+        from bokeh.models import HoverTool, WheelZoomTool, PanTool, BoxZoomTool, ResetTool, SaveTool
+
+        # Get topic weights
+        doc_features = []
+        doc_titles = []
+        doc_dominanttopics = []
+        for i, row_list in enumerate(self.lda_model[self.corpus]):
+            # What we have in the encoding:
+            # row_list[0] = Document topics: [(0, 0.87507219282484316), (1, 0.12492780717515681)]
+            # row_list[1] = Word topics: [(0, [0, 1]), (3, [0, 1]), (4, [0, 1]), (7, [0, 1])]
+            # row_list[2] = Phi values: [(0, [(0, 0.9783234200583657), (1, 0.021676579941634355)]), (3, [(0, 0.93272653621872503), (1, 0.067273463781275009)]), (4, [(0, 0.98919912227661466), (1, 0.010800877723385368)]), (7, [(0, 0.97541896333079636), (1, 0.024581036669203641)])]
+
+            # row_list[0] has the weights to topics
+            # This means that one document was encoded into the LDA_number_of_topics topics we chose
+
+            tmp = np.zeros(self.LDA_number_of_topics)
+            max_w = -1
+            max_w_idx = -1
+            for j, w in row_list[0]:
+                tmp[j] = w
+                if max_w < w:
+                    max_w_idx = j
+                    max_w = w
+            doc_features.append(tmp)
+
+            doc_dominanttopics.append(max_w_idx)
+            doc_titles.append(self.list_of_captions_data[i])
+
+        arr = pd.DataFrame(doc_features).fillna(0).values
+        # tSNE Dimension Reduction
+        tsne_model = TSNE(n_components=2, verbose=1, random_state=0, angle=.99, init='pca')
+        tsne_lda = tsne_model.fit_transform(arr)
+
+        TOOLTIPS = [
+            ("index", "$index"),
+            ("(x,y)", "($x, $y)"),
+            ("desc", "@desc"),
+        ]
+        mycolors = np.array(self.colors_topics)
+
+        hover = HoverTool(tooltips=TOOLTIPS)
+        tools = [hover, WheelZoomTool(), PanTool(), BoxZoomTool(), ResetTool(), SaveTool()]
+
+        plot = figure(title="t-SNE Clustering of {} LDA Topics".format(self.LDA_number_of_topics),
+                      tools=tools, plot_width=900, plot_height=700)
+        source = ColumnDataSource(data=dict(
+            x=tsne_lda[:, 0],
+            y=tsne_lda[:, 1],
+            desc=doc_titles,
+            color=mycolors[doc_dominanttopics],
+        ))
+
+        plot.scatter(x='x', y='y', source=source, color='color')
+        output_file(NAME_tsne)
+        save(plot)
+        # show(plot)
+
+        # clean
+        del tsne_model, tsne_lda, arr, plot, source, hover, tools, doc_features, doc_titles, doc_dominanttopics
+
     ### Main called functions
 
     def analyze_raw_text(self, number_of_topics=5):
@@ -318,14 +386,19 @@ class NLPTools(object):
         NAME_wordclouds = "static/wordclouds_"  # +i+.png
         self.analyze_wordclouds(NAME_wordclouds)
 
+        # Additionally we can also call the
+        # list_tsne
+        # list_histograms
+        if self.list_of_captions_data is not None:
+            NAME_tsne = "templates/plots/tsne.html"
+            self.analyze_tsne(NAME_tsne)
+
         files_to_zip = [pyLDAviz_name]
         for i in range(self.LDA_number_of_topics):
             files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
         self.zip_files(files_to_zip)
 
         return "Analysis ready!"
-
-
 
     ###################################################
     ###################################################
