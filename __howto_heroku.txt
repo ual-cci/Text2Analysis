@@ -14,6 +14,7 @@ git push heroku master
 
 # Useful:
 heroku logs
+heroku logs --tail
 # to check when there are errors on heroku server side
 
 heroku run bash
