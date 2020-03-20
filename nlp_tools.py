@@ -386,14 +386,16 @@ class NLPTools(object):
         NAME_wordclouds = "static/wordclouds_"  # +i+.png
         self.analyze_wordclouds(NAME_wordclouds)
 
+        files_to_zip = [pyLDAviz_name]
+
         # Additionally we can also call the
         # list_tsne
         # list_histograms
         if self.list_of_captions_data is not None:
             NAME_tsne = "templates/plots/tsne.html"
             self.analyze_tsne(NAME_tsne)
+            files_to_zip.append(NAME_tsne)
 
-        files_to_zip = [pyLDAviz_name]
         for i in range(self.LDA_number_of_topics):
             files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
         self.zip_files(files_to_zip)

@@ -23,6 +23,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 LAST_ANALYSIS_N_TOPICS = 0
 async_ready_flag = False
 async_answer = None
+tsne_on = False
 
 @app.route('/')
 def index():
@@ -43,9 +44,10 @@ def processing_function_extracted(input_type, user_input, number_of_topics):
     # input_type ... 0=RawText, 1=ListOfTexts, 2=ListOfTextsWithCaptions
     print("-processing_function_extracted called!")
 
-    global async_answer, async_ready_flag
+    global async_answer, async_ready_flag, tsne_on
     async_answer = None
     async_ready_flag = False
+    tsne_on = False
 
     start_analysis = timer()
 
@@ -63,6 +65,7 @@ def processing_function_extracted(input_type, user_input, number_of_topics):
             texts = user_input
         elif input_type == 2:
             texts, captions = user_input
+            tsne_on = True
         analysis_handler.load_list_of_text(texts, captions)
 
     # todo: split raw vs list
@@ -214,9 +217,11 @@ def check():
 @app.route('/last', methods=['GET', 'POST'])
 def last():
     global LAST_ANALYSIS_N_TOPICS
+    global tsne_on
     print("LAST_ANALYSIS_N_TOPICS=",LAST_ANALYSIS_N_TOPICS)
+    print("tsne_on=",tsne_on)
 
-    return render_template('last.html', n_topics=LAST_ANALYSIS_N_TOPICS, rand_i = random.randint(1,9999))
+    return render_template('last.html', n_topics=LAST_ANALYSIS_N_TOPICS, tsne_on=tsne_on, rand_i = random.randint(1,9999))
     #return render_template('plots/LDA_Visualization.html')
 
 @app.route('/pyldaviz', methods=['GET', 'POST'])
