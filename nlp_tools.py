@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 from zipfile import ZipFile
+import random
 
 from pprint import pprint
 import pandas as pd
@@ -101,15 +102,29 @@ class NLPTools(object):
         self.stats_n_chars = len(raw_text_input)
         self.stats_n_documents = len(self.list_of_texts_data)
 
+        # Shuffle after loading!
+        self.shuffle()
+
     def load_list_of_data(self, list_of_texts_input, list_of_captions_input=None):
         print("Loaded",len(list_of_texts_input),"documents.")
 
-        self.list_of_texts_data = list_of_texts_input
+        documents_cleaned, documents_lemmatized = self.preprocessing(list_of_texts_input, self.stop_words)
+
+        self.list_of_texts_data = documents_lemmatized
         self.list_of_captions_data = list_of_captions_input
 
         self.stats_n_chars = sum([len(doc) for doc in list_of_texts_input])
         self.stats_n_documents = len(list_of_texts_input)
 
+        # Shuffle after loading!
+        self.shuffle()
+
+    def shuffle(self):
+        print("Shuffling data!")
+
+        c = list(zip(self.list_of_texts_data, self.list_of_captions_data))
+        random.shuffle(c)
+        self.list_of_texts_data, self.list_of_captions_data = zip(*c)
 
     def restart_workspace(self):
         # restart / file cleanup!:

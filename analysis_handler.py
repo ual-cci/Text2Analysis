@@ -11,13 +11,17 @@ class AnalysisHandler(object):
 
         self.nlp_tools = nlp_tools.NLPTools(self.settings)
 
-    def load_text(self, text):
+    def load_raw_text(self, text):
         self.input_text = text
         print("Loaded text with", len(text), "characters!")
+        self.nlp_tools.load_splitting_by_sentences(self.input_text)
+
+
+    def load_list_of_text(self, texts, captions = None):
+        self.nlp_tools.load_list_of_data(list_of_texts_input = texts, list_of_captions_input = captions)
+        print("Loaded list of texts with", len(texts), "documents!")
 
     def call_analysis_raw_text(self, number_of_topics):
-        self.nlp_tools.load_splitting_by_sentences(self.input_text)
-        #return self.nlp_tools.analyze_full_bak() # older
         reply = self.nlp_tools.analyze_raw_text(number_of_topics)
         n_topics = self.nlp_tools.LDA_number_of_topics
         n_chars = self.nlp_tools.stats_n_chars

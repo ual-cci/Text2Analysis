@@ -169,6 +169,5 @@ venv.bak/
 *.lda.*
 *.lsi.*
 *.tfidf
-*.csv
 *.png
 *.pdf

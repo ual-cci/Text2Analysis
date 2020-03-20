@@ -1,4 +1,4 @@
-from flask import Flask, session, redirect, url_for, request, render_template, send_file, Response
+from flask import Flask, redirect, url_for, request, render_template, send_file, Response
 from analysis_handler import AnalysisHandler
 import os, random
 from timeit import default_timer as timer
@@ -6,10 +6,18 @@ from timeit import default_timer as timer
 #from multiprocessing.dummy import Pool
 import threading, time
 import time
+import pandas as pd
+
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['TEMPLATES_AUTO_RELOAD'] = True # nice, this one works to update /pyldaviz when the analysis changes it
+
+# uploading texts:
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'txt', 'csv'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # GLOBALS:
 LAST_ANALYSIS_N_TOPICS = 0
@@ -24,14 +32,15 @@ def index():
 def enter():
     sample_text = "Lorem Ipsum"
     try:
-        file = open("sample_input.txt", "r")
+        file = open("static/examples/sample_input.txt", "r")
         sample_text = file.read()
         file.close()
     except:
         print("Failed to load sample_input.txt, loading default text string.")
     return render_template('enter.html', sample_text = sample_text)
 
-def processing_function_extracted(user_input, number_of_topics):
+def processing_function_extracted(input_type, user_input, number_of_topics):
+    # input_type ... 0=RawText, 1=ListOfTexts, 2=ListOfTextsWithCaptions
     print("-processing_function_extracted called!")
 
     global async_answer, async_ready_flag
@@ -44,7 +53,19 @@ def processing_function_extracted(user_input, number_of_topics):
     settings = None
     analysis_handler = AnalysisHandler(settings)
 
-    analysis_handler.load_text(user_input)
+    if input_type == 0:
+        analysis_handler.load_raw_text(user_input)
+
+    else:
+        texts = None
+        captions = None
+        if input_type == 1:
+            texts = user_input
+        elif input_type == 2:
+            texts, captions = user_input
+        analysis_handler.load_list_of_text(texts, captions)
+
+    # todo: split raw vs list
     analysis_reply, n_topics, n_chars, n_documents = analysis_handler.call_analysis_raw_text(number_of_topics)
 
     analysis_handler.cleanup() # cleanup so that we regain the memory on server ...
@@ -78,8 +99,9 @@ def process(user_input=None):
     if request.method == 'POST':
         user_input = request.form['user_input']
         number_of_topics = int(request.form['number_of_topics'])
+        input_type = 0  # 0=RawText, 1=ListOfTexts, 2=ListOfTextsWithCaptions
 
-        processing_function_extracted(user_input, number_of_topics)
+        processing_function_extracted(input_type, user_input, number_of_topics)
         global async_answer
         analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = async_answer
 
@@ -102,11 +124,60 @@ def process(user_input=None):
 
 @app.route('/process', methods=['GET', 'POST'])
 def check():
+    input_type = 0 # 0=RawText, 1=ListOfTexts, 2=ListOfTextsWithCaptions
+    user_input = None
+    file_contents = None
     if request.method == 'POST':
+        if 'file' in request.files:
+            file = request.files['file']
+            if file:
+                txt_len = 0
+                allowed, ext = allowed_file(file.filename)
+                if allowed:
+                    if ext == 'txt':
+                        file_contents = file.read()
+                        #file_contents = str(file_contents) # keeps the b'' tags etc
+                        file_contents = file_contents.decode('utf-8')
+                        txt_len = len(file_contents)
+
+                    elif ext == 'csv':
+                        # load as csv
+
+                        contains_captions = False
+                        texts = []
+                        captions = []
+                        df = pd.read_csv(file, delimiter=',')
+                        for line in df.values:
+                            text = line[0]
+                            caption = ""
+
+                            cols = len(line)
+                            if cols > 1:
+                                contains_captions = True
+                                caption = line[1]
+
+                            texts.append(text)
+                            captions.append(caption)
+                            txt_len += len(text)
+
+                        if contains_captions:
+                            input_type = 2
+                            file_contents = texts, captions
+                        else:
+                            input_type = 1
+                            file_contents = texts
+
+                file.close()
+                print("loaded from file, number of chars:", txt_len)
+
         user_input = request.form['user_input']
         number_of_topics = int(request.form['number_of_topics'])
 
-    def generate(user_input, number_of_topics):
+        if file_contents is not None:
+            user_input = file_contents
+
+
+    def generate(input_type, user_input, number_of_topics):
         yield "Started ... please wait ... <br><br>"  # notice that we are yielding something as soon as possible
 
         global async_ready_flag
@@ -116,7 +187,7 @@ def check():
 
         #pool = Pool(processes=1)
         #result = pool.apply_async(processing_function_extracted, [user_input, number_of_topics], callback)  # Evaluate "processing_function_extracted" asynchronously calling callback when finished.
-        threading.Thread(target=processing_function_extracted,args=[user_input, number_of_topics]).start()
+        threading.Thread(target=processing_function_extracted,args=[input_type, user_input, number_of_topics]).start()
 
         while not async_ready_flag:
             current = timer()
@@ -132,7 +203,7 @@ def check():
         answer = "<br><br><h2>Finished! Please look at the <a href='last'>results</a></h2>" # html like returned to Response
         yield answer
 
-    return Response(generate(user_input, number_of_topics), mimetype='text/html')
+    return Response(generate(input_type, user_input, number_of_topics), mimetype='text/html')
 
     #return render_template('process.html', user_input=preview, analysis_reply=analysis_reply, n_topics=n_topics,
     #                       n_chars = n_chars, n_documents = n_documents, n_seconds_analysis = n_seconds_analysis,
@@ -152,16 +223,19 @@ def last():
 def pyldaviz():
     return render_template('plots/LDA_Visualization.html')
 
+@app.route('/example_csv', methods=['GET', 'POST'])
+def example_csv():
+    return send_file("static/examples/example_list_data_bbc-science-20-3-2020.csv", as_attachment=True)
+
 @app.route('/download')
 def download():
     path = "save.zip"
     return send_file(path, as_attachment=True)
 
-@app.route('/forget')
-def forget():
-    # remove the text data from the session if it's there
-    session.pop('user_input', None)
-    return redirect(url_for('enter'))
+def allowed_file(filename):
+    ext = filename.rsplit('.', 1)[1].lower()
+    return ('.' in filename and ext in ALLOWED_EXTENSIONS), ext
+
 
 #if __name__ == '__main__':
 #    with app.app_context():
