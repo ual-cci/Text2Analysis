@@ -10,4 +10,6 @@ Prerequisite libraries:
 
 ## Demo
 
+- Run app.py file: `python3 app.py`
+
 Now it's also working online on Heroku (with some setup pains...), see: https://previtus-nlp-api-heroku.herokuapp.com/
