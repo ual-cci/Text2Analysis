@@ -8,6 +8,18 @@ Prerequisite libraries:
 - run python script with `import nltk` and `nltk.download('stopwords')`
 - `python3 -m spacy download en`
 
+### Fast setup:
+
+```
+git clone https://github.com/previtus/Text2Analysis.git
+#(optionally make an environment)
+pip3 install -r requirements.txt
+python3 -m nltk.downloader stopwords
+python3 -m spacy download en
+python3 app.py
+#(starts it on http://localhost:5000/)
+```
+
 ## Demo
 
 - Run app.py file: `python3 app.py`
