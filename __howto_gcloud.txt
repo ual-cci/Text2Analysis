@@ -28,7 +28,13 @@ docker system prune
 # Inspect projects and their logs at:
 https://console.cloud.google.com/run?project=PROJECT_ID
 
-# BTW for gpu might need:
-Anthos - https://cloud.google.com/run/choosing-a-platform
 
+# Notes:
+- Cloud Run works nicely when we only need CPU (probably because then it can be spinned down easily and causes no extra costs?)
+  (Then the pricing model of cost/per request makes sense)
 
+- GPU equipped version of this is using "Anthos" option (See Anthos - https://cloud.google.com/run/choosing-a-platform),
+  which means creating a cluster where I can choose whatever setup for the server
+  (this includes the gpu heavy ones). However it's paid per minute. (I think)
+  Additionally, you seem to need to have a domain - or use a free redirection one like nip.io (see https://cloud.google.com/run/docs/gke/default-domain)
+  ... all of it seems to be much bigger pain to setup, manage, control if it's running etc. (CPU version seems easy when compared...)
