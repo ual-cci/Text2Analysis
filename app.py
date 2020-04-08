@@ -263,11 +263,17 @@ def download(analysis_name):
 def debug_list():
     folder_analysis = "templates/plots/"
     analysis_names = [f for f in listdir(folder_analysis) if not isfile(join(folder_analysis, f))]
-    print("folders:", analysis_names)
-    for folder in analysis_names:
-        print("/saved/"+folder)
 
-    return Response("Foo!", mimetype='text/html')
+    if len(analysis_names) > 0:
+        message = ""
+        print("folders:", analysis_names)
+        for folder in analysis_names:
+            message += "/saved/"+folder + "<br>"
+            print("/saved/"+folder)
+
+        return Response(message, mimetype='text/html')
+    else:
+        return Response("No files yet!", mimetype='text/html')
 
 
 def allowed_file(filename):
