@@ -11,7 +11,7 @@ import time
 import pandas as pd
 from werkzeug.utils import secure_filename
 
-from stopwords_hardcoded_collection import adjectives_500
+from stopwords_hardcoded_collection import adjectives_500, animals
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -285,7 +285,8 @@ def unique_random_name_gen():
     print(len(adjectives), adjectives)
     """
     adjectives = adjectives_500
-    random_name = random.sample(adjectives, 1)[0] + "_" + str(random.randint(0,9999))
+
+    random_name = random.sample(adjectives, 1)[0].lower() + "_" + random.sample(animals, 1)[0].lower() + "_" + str(random.randint(0,9999))
     return random_name
 
 #if __name__ == '__main__':
