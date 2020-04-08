@@ -140,20 +140,26 @@ class NLPTools(object):
                 os.remove(file)
                 print("deleted", file)
 
-    def prepare_workspace(self, plot_dir):
+    def prepare_workspace(self, folder_name):
+        plot_dir = "templates/plots/" + folder_name
         if not os.path.exists(plot_dir):
             os.makedirs(plot_dir)
         if not os.path.exists("data"):
             os.makedirs("data")
 
-    def zip_files(self, files_to_add):
+        plot_dir = "static/"+folder_name+"/"
+        if not os.path.exists(plot_dir):
+            os.makedirs(plot_dir)
+
+
+    def zip_files(self, archive_name, files_to_add):
         print("zipping")
         #output_filename = "save"
         #dir_name = "templates/plots"
         #shutil.make_archive(output_filename, 'zip', dir_name)
 
         # create a ZipFile object
-        zipObj = ZipFile('save.zip', 'w')
+        zipObj = ZipFile(archive_name, 'w')
         for file in files_to_add:
             arcname = file.split("/")[-1]
             zipObj.write(file, arcname)
@@ -366,24 +372,24 @@ class NLPTools(object):
 
     ### Main called functions
 
-    def analyze_raw_text(self, number_of_topics=5):
+    def analyze_raw_text(self, number_of_topics=5, folder_name = "demo-folder"):
         # Load input data
         data_lemmatized = self.list_of_texts_data
         self.LDA_number_of_topics = number_of_topics
 
         # Prepare the workspace folders
         self.restart_workspace()
-        plot_dir = "templates/plots/"
-        self.prepare_workspace(plot_dir)
+        plot_dir = "templates/plots/" + folder_name
+        self.prepare_workspace(folder_name)
 
         # Prepare the model
         self.prepare_lda_model(data_lemmatized)
 
         # Complete analysis
-        pyLDAviz_name = "templates/plots/LDA_Visualization.html"
+        pyLDAviz_name = plot_dir+"/LDA_Visualization.html"
         self.analyze_pyLDA(pyLDAviz_name)
 
-        NAME_wordclouds = "static/wordclouds_"  # +i+.png
+        NAME_wordclouds = "static/"+folder_name+"/wordclouds_"  # +i+.png
         self.analyze_wordclouds(NAME_wordclouds)
 
         files_to_zip = [pyLDAviz_name]
@@ -392,13 +398,14 @@ class NLPTools(object):
         # list_tsne
         # list_histograms
         if self.list_of_captions_data is not None:
-            NAME_tsne = "templates/plots/tsne.html"
+            NAME_tsne = plot_dir+"/tsne.html"
             self.analyze_tsne(NAME_tsne)
             files_to_zip.append(NAME_tsne)
 
         for i in range(self.LDA_number_of_topics):
-            files_to_zip.append("static/wordclouds_"+str(i).zfill(2)+".png")
-        self.zip_files(files_to_zip)
+            files_to_zip.append("static/"+folder_name+"/wordclouds_"+str(i).zfill(2)+".png")
+        archive_name = "templates/plots/" + folder_name + "/analysis.zip"
+        self.zip_files(archive_name, files_to_zip)
 
         return "Analysis ready!"
 

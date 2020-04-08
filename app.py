@@ -1,13 +1,17 @@
 from flask import Flask, redirect, url_for, request, render_template, send_file, Response
 from analysis_handler import AnalysisHandler
 import os, random
+from os import listdir
+from os.path import isfile, join
 from timeit import default_timer as timer
 #from multiprocessing import Pool
 #from multiprocessing.dummy import Pool
 import threading, time
 import time
 import pandas as pd
+from werkzeug.utils import secure_filename
 
+from stopwords_hardcoded_collection import adjectives_500
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -52,8 +56,9 @@ def processing_function_extracted(input_type, user_input, number_of_topics):
     start_analysis = timer()
 
     # Start processing
+    folder_name = unique_random_name_gen()
     settings = None
-    analysis_handler = AnalysisHandler(settings)
+    analysis_handler = AnalysisHandler(settings, folder_name)
 
     if input_type == 0:
         analysis_handler.load_raw_text(user_input)
@@ -93,7 +98,7 @@ def processing_function_extracted(input_type, user_input, number_of_topics):
     global LAST_ANALYSIS_N_TOPICS
     LAST_ANALYSIS_N_TOPICS = n_topics
 
-    async_answer = analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
+    async_answer = analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis, folder_name
     async_ready_flag = True
     #return analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis
 
@@ -106,7 +111,7 @@ def process(user_input=None):
 
         processing_function_extracted(input_type, user_input, number_of_topics)
         global async_answer
-        analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = async_answer
+        analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis, folder_name = async_answer
 
         preview = user_input[0:20]+"..."
     else:
@@ -202,8 +207,8 @@ def check():
             yield "Still running (so far "+str(so_far_waited)+" seconds) ... please wait ... (will check again in "+str(sec_wait)+" seconds)<br>"
             time.sleep(sec_wait)
 
-        #analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis = async_answer
-        answer = "<br><br><h2>Finished! Please look at the <a href='last'>results</a></h2>" # html like returned to Response
+        analysis_reply, n_topics, n_chars, n_documents, n_seconds_analysis, folder_name = async_answer
+        answer = "<br><br><h2>Finished! Please look at the <a href='saved/"+folder_name+"'>results</a></h2>" # html like returned to Response
         yield answer
 
     return Response(generate(input_type, user_input, number_of_topics), mimetype='text/html')
@@ -213,38 +218,75 @@ def check():
     #                       rand_i = random.randint(1,9999))
 
 
+@app.route('/saved/<analysis_name>', methods=['GET', 'POST'])
+def last(analysis_name):
+    analysis_name = secure_filename(analysis_name)
+    folder_wordclouds = "static/"+analysis_name+"/"
+    wordclouds_names = [f for f in listdir(folder_wordclouds) if isfile(join(folder_wordclouds, f)) and ".png" in f]
+    print(wordclouds_names)
+    LAST_ANALYSIS_N_TOPICS = len(wordclouds_names)
 
-@app.route('/last', methods=['GET', 'POST'])
-def last():
-    global LAST_ANALYSIS_N_TOPICS
-    global tsne_on
+    folder_analysis = "templates/plots/"+analysis_name+"/"
+    analysis_names = [f for f in listdir(folder_analysis) if isfile(join(folder_analysis, f))]
+    print(analysis_names)
+
+    tsne_on = ("tsne.html" in analysis_names)
     print("LAST_ANALYSIS_N_TOPICS=",LAST_ANALYSIS_N_TOPICS)
     print("tsne_on=",tsne_on)
 
-    return render_template('last.html', n_topics=LAST_ANALYSIS_N_TOPICS, tsne_on=tsne_on, rand_i = random.randint(1,9999))
-    #return render_template('plots/LDA_Visualization.html')
+    return render_template('last.html', n_topics=LAST_ANALYSIS_N_TOPICS, tsne_on=tsne_on, rand_i=random.randint(1, 9999), analysis_name=analysis_name)
 
-@app.route('/pyldaviz', methods=['GET', 'POST'])
-def pyldaviz():
-    return render_template('plots/LDA_Visualization.html')
+@app.route('/pyldaviz/<analysis_name>', methods=['GET', 'POST'])
+def pyldaviz(analysis_name):
+    analysis_name = secure_filename(analysis_name)
+    folder_analysis = "plots/"+analysis_name+"/LDA_Visualization.html"
+    return render_template(folder_analysis)
 
-@app.route('/tsne', methods=['GET', 'POST'])
-def tsne():
-    return render_template('plots/tsne.html')
+@app.route('/tsne/<analysis_name>', methods=['GET', 'POST'])
+def tsne(analysis_name):
+    analysis_name = secure_filename(analysis_name)
+    folder_analysis = "plots/"+analysis_name+"/tsne.html"
+    return render_template(folder_analysis)
 
 @app.route('/example_csv', methods=['GET', 'POST'])
 def example_csv():
     return send_file("static/examples/example_list_data_bbc-science-20-3-2020.csv", as_attachment=True)
 
-@app.route('/download')
-def download():
-    path = "save.zip"
+@app.route('/download/<analysis_name>', methods=['GET', 'POST'])
+def download(analysis_name):
+    analysis_name = secure_filename(analysis_name)
+    folder_analysis = "templates/plots/"+analysis_name+"/"
+    path = folder_analysis+"analysis.zip"
     return send_file(path, as_attachment=True)
+
+@app.route('/debug_list', methods=['GET', 'POST'])
+def debug_list():
+    folder_analysis = "templates/plots/"
+    analysis_names = [f for f in listdir(folder_analysis) if not isfile(join(folder_analysis, f))]
+    print("folders:", analysis_names)
+    for folder in analysis_names:
+        print("/saved/"+folder)
+
+    return Response("Foo!", mimetype='text/html')
+
 
 def allowed_file(filename):
     ext = filename.rsplit('.', 1)[1].lower()
     return ('.' in filename and ext in ALLOWED_EXTENSIONS), ext
 
+def unique_random_name_gen():
+    """
+    from nltk.corpus import wordnet as wn
+    adjectives = []
+    for synset in list(wn.all_synsets(wn.ADJ)):
+        for adj in synset.lemma_names():
+            adjectives.append(str(adj))
+    adjectives = random.sample(adjectives,500)
+    print(len(adjectives), adjectives)
+    """
+    adjectives = adjectives_500
+    random_name = random.sample(adjectives, 1)[0] + "_" + str(random.randint(0,9999))
+    return random_name
 
 #if __name__ == '__main__':
 #    with app.app_context():

@@ -5,9 +5,10 @@ class AnalysisHandler(object):
     Main class for the analysis ...
     """
 
-    def __init__(self, settings):
+    def __init__(self, settings, folder_name):
         self.settings = settings
         self.input_text = None
+        self.folder_name = folder_name
 
         self.nlp_tools = nlp_tools.NLPTools(self.settings)
 
@@ -22,7 +23,7 @@ class AnalysisHandler(object):
         print("Loaded list of texts with", len(texts), "documents!")
 
     def call_analysis_raw_text(self, number_of_topics):
-        reply = self.nlp_tools.analyze_raw_text(number_of_topics)
+        reply = self.nlp_tools.analyze_raw_text(number_of_topics, self.folder_name)
         n_topics = self.nlp_tools.LDA_number_of_topics
         n_chars = self.nlp_tools.stats_n_chars
         n_documents = self.nlp_tools.stats_n_documents
