@@ -12,6 +12,7 @@ RUN pip install nltk
 # RUN python -c "import nltk; nltk.download('stopwords')"
 RUN python -m nltk.downloader stopwords -d /usr/local/nltk_data
 RUN pip install -r requirements.txt
+RUN pip install imageio
 RUN python -m spacy download en
 
 
