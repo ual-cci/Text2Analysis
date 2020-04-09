@@ -16,6 +16,11 @@ gcloud run deploy --image gcr.io/PROJECT-ID/helloworld --platform managed --memo
 ( allow unauthenticated invocations: respond y )
 ( will give you url to the project:  SOMEURL.run.app )
 
+# Some details about the service settings (for example https://cloud.google.com/run/docs/about-concurrency)
+gcloud run services list # get services such as "text2analysis"
+gcloud run services describe SERVICE
+gcloud run services update SERVICE --concurrency CONCURRENCY # might not be a good idea ...
+
 
 # Testing locally
 sudo gcloud auth configure-docker
