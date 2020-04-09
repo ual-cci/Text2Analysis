@@ -10,6 +10,8 @@ class AnalysisHandler(object):
         self.settings = settings
         self.input_text = None
         self.folder_name = folder_name
+
+        # locks http://effbot.org/zone/thread-synchronization.htm
         self.lock = threading.Lock()
 
 
