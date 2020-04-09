@@ -1,4 +1,5 @@
 import nlp_tools
+import threading
 
 class AnalysisHandler(object):
     """
@@ -9,6 +10,8 @@ class AnalysisHandler(object):
         self.settings = settings
         self.input_text = None
         self.folder_name = folder_name
+        self.lock = threading.Lock()
+
 
         self.nlp_tools = nlp_tools.NLPTools(self.settings)
 
@@ -23,7 +26,13 @@ class AnalysisHandler(object):
         print("Loaded list of texts with", len(texts), "documents!")
 
     def call_analysis_raw_text(self, number_of_topics):
-        reply = self.nlp_tools.analyze_raw_text(number_of_topics, self.folder_name)
+
+        self.lock.acquire()
+        try:
+            reply = self.nlp_tools.analyze_raw_text(number_of_topics, self.folder_name)
+        finally:
+            self.lock.release()
+
         n_topics = self.nlp_tools.LDA_number_of_topics
         n_chars = self.nlp_tools.stats_n_chars
         n_documents = self.nlp_tools.stats_n_documents
