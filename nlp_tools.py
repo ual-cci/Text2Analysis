@@ -26,8 +26,6 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from nltk.corpus import stopwords
 import matplotlib.colors as mcolors
-
-import multiprocessing
 import imageio
 
 # Enable logging for gensim - optional
@@ -299,51 +297,20 @@ class NLPTools(object):
             cloud.generate_from_frequencies(topic_words, max_font_size=300)
             imageio.imwrite(NAME_wordclouds + str(topic_i).zfill(2) + ".png", cloud)
 
+            """ # this alternative was causing issues ...
+            fig = plt.figure()
+            plt.gca().imshow(cloud)
+            plt.gca().set_title('Topic ' + str(topic_i), fontdict=dict(size=16))
+            plt.axis('off')
+            plt.margins(x=0, y=0)
+            plt.tight_layout()
+            plt.savefig(self.NAME_wordclouds + str(topic_i).zfill(2) + ".png")
+            plt.close()
+            """
+
             del cloud
-        #"""
-        """
-        self.NAME_wordclouds = NAME_wordclouds
-        for topic in topics:
-            # hmmmm
-            pool = multiprocessing.Pool()
-            pool.map(self.plot_topic, [[topic]])
-        """
+
         print("-done")
-
-    def plot_topic(self, args):
-        topic = args[0]
-        topic_i = topic[0]
-        topic_words = topic[1]
-        print("topic", topic_i, "===", topic_words)
-
-        fig = plt.figure()
-        topic_words = dict(topic_words)
-        cloud = WordCloud(stopwords=self.stop_words, background_color='white', width=2500, height=1800,
-                          max_words=10, colormap='tab10',
-                          color_func=lambda *args, **kwargs: self.colors_topics[topic_i],
-                          prefer_horizontal=1.0)
-
-        cloud.generate_from_frequencies(topic_words, max_font_size=300)
-
-        print("debug: cloud", type(cloud))
-        try:
-            print("debug: np.asarray(cloud).shape", np.asarray(cloud).shape)
-        except:
-            pass
-
-        plt.gca().imshow(cloud)
-        plt.gca().set_title('Topic ' + str(topic_i), fontdict=dict(size=16))
-        plt.axis('off')
-        plt.margins(x=0, y=0)
-        plt.tight_layout()
-        plt.savefig(self.NAME_wordclouds + str(topic_i).zfill(2) + ".png")
-        plt.close()
-
-        del cloud
-
-        # hint from (https://stackoverflow.com/questions/4659680/matplotlib-simultaneous-plotting-in-multiple-threads):
-        # if you are using it in an always running server, for example flask, these two calls also should be added,
-        # in order to completely close the created processes: pool.close() and pool.join()
 
     def analyze_tsne(self,NAME_tsne):
         print("Saving TSNE visualization into >", NAME_tsne)
