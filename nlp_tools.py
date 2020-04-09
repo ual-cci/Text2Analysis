@@ -28,6 +28,7 @@ from nltk.corpus import stopwords
 import matplotlib.colors as mcolors
 
 import multiprocessing
+import imageio
 
 # Enable logging for gensim - optional
 import logging
@@ -284,7 +285,7 @@ class NLPTools(object):
 
         topics = self.lda_model.show_topics(num_topics=self.LDA_number_of_topics, formatted=False)
 
-        """
+        #""" # assuming that the plt.figure() opening and closing made problems with gcloud concurrecy...
         for topic in topics:
             topic_i = topic[0]
             topic_words = topic[1]
@@ -296,17 +297,17 @@ class NLPTools(object):
                               color_func=lambda *args, **kwargs: self.colors_topics[topic_i],
                               prefer_horizontal=1.0)
             cloud.generate_from_frequencies(topic_words, max_font_size=300)
-            import scipy.misc
-            scipy.misc.imsave(self.NAME_wordclouds + str(topic_i).zfill(2) + ".png", cloud)
-            del cloud
-        """
+            imageio.imwrite(NAME_wordclouds + str(topic_i).zfill(2) + ".png", cloud)
 
+            del cloud
+        #"""
+        """
         self.NAME_wordclouds = NAME_wordclouds
         for topic in topics:
             # hmmmm
             pool = multiprocessing.Pool()
             pool.map(self.plot_topic, [[topic]])
-
+        """
         print("-done")
 
     def plot_topic(self, args):
