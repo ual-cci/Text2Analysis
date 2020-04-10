@@ -232,6 +232,10 @@ class NLPTools(object):
         # Do lemmatization keeping only noun, adj, vb, adv
         print("-lemmatization")
         data_lemmatized = lemmatization(data_words_bigrams, nlp, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
+        count = 0
+        for l in data_lemmatized:
+            count += len(l)
+        print("number of lemmatized words:", count)
 
         if self.verbose > 1:
             print(data_lemmatized[:1])
