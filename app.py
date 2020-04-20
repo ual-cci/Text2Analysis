@@ -220,21 +220,27 @@ def check():
 
 @app.route('/saved/<analysis_name>', methods=['GET', 'POST'])
 def last(analysis_name):
-    analysis_name = secure_filename(analysis_name)
-    folder_wordclouds = "static/"+analysis_name+"/"
-    wordclouds_names = [f for f in listdir(folder_wordclouds) if isfile(join(folder_wordclouds, f)) and ".png" in f]
-    print(wordclouds_names)
-    LAST_ANALYSIS_N_TOPICS = len(wordclouds_names)
+    try:
+        analysis_name = secure_filename(analysis_name)
+        folder_wordclouds = "static/" + analysis_name + "/"
+        wordclouds_names = [f for f in listdir(folder_wordclouds) if isfile(join(folder_wordclouds, f)) and ".png" in f]
+        print(wordclouds_names)
+        LAST_ANALYSIS_N_TOPICS = len(wordclouds_names)
 
-    folder_analysis = "templates/plots/"+analysis_name+"/"
-    analysis_names = [f for f in listdir(folder_analysis) if isfile(join(folder_analysis, f))]
-    print(analysis_names)
+        folder_analysis = "templates/plots/" + analysis_name + "/"
+        analysis_names = [f for f in listdir(folder_analysis) if isfile(join(folder_analysis, f))]
+        print(analysis_names)
 
-    tsne_on = ("tsne.html" in analysis_names)
-    print("LAST_ANALYSIS_N_TOPICS=",LAST_ANALYSIS_N_TOPICS)
-    print("tsne_on=",tsne_on)
+        tsne_on = ("tsne.html" in analysis_names)
+        print("LAST_ANALYSIS_N_TOPICS=", LAST_ANALYSIS_N_TOPICS)
+        print("tsne_on=", tsne_on)
 
-    return render_template('last.html', n_topics=LAST_ANALYSIS_N_TOPICS, tsne_on=tsne_on, rand_i=random.randint(1, 9999), analysis_name=analysis_name)
+        return render_template('last.html', n_topics=LAST_ANALYSIS_N_TOPICS, tsne_on=tsne_on,
+                               rand_i=random.randint(1, 9999), analysis_name=analysis_name)
+    except:
+        message = "Analysis files couldn't be located, results might be expired. Please re-run you analysis."
+        return Response(message, mimetype='text/html')
+
 
 @app.route('/pyldaviz/<analysis_name>', methods=['GET', 'POST'])
 def pyldaviz(analysis_name):
