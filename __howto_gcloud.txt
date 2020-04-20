@@ -33,6 +33,12 @@ docker system prune
 # Inspect projects and their logs at:
 https://console.cloud.google.com/run?project=PROJECT_ID
 
+## Clean-up:
+# see what you have set up:
+gcloud config list
+# then erase some of the values like this:
+gcloud config unset run/namespace
+
 
 # Notes:
 - Cloud Run works nicely when we only need CPU (probably because then it can be spinned down easily and causes no extra costs?)
