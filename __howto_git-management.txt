@@ -1,0 +1,4 @@
+# New remote
+
+git remote add newremote https://github.com/user/repo.git
+git push newremote master
