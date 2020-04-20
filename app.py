@@ -267,18 +267,22 @@ def download(analysis_name):
 
 @app.route('/debug_list', methods=['GET', 'POST'])
 def debug_list():
-    folder_analysis = "templates/plots/"
-    analysis_names = [f for f in listdir(folder_analysis) if not isfile(join(folder_analysis, f))]
+    try:
+        folder_analysis = "templates/plots/"
+        analysis_names = [f for f in listdir(folder_analysis) if not isfile(join(folder_analysis, f))]
 
-    if len(analysis_names) > 0:
-        message = ""
-        print("folders:", analysis_names)
-        for folder in analysis_names:
-            message += "/saved/"+folder + "<br>"
-            print("/saved/"+folder)
+        if len(analysis_names) > 0:
+            message = ""
+            print("folders:", analysis_names)
+            for folder in analysis_names:
+                message += "/saved/"+folder + "<br>"
+                print("/saved/"+folder)
 
-        return Response(message, mimetype='text/html')
-    else:
+            return Response(message, mimetype='text/html')
+        else:
+            return Response("No files yet!", mimetype='text/html')
+
+    except:
         return Response("No files yet!", mimetype='text/html')
 
 
