@@ -28,7 +28,7 @@ MarkupSafe==1.1.1
 matplotlib==3.2.0
 more-itertools==8.2.0
 murmurhash==1.0.2
-nltk==3.4.5
+nltk==3.6.6
 numexpr==2.7.1
 numpy==1.18.1
 packaging==20.3
